@@ -1,5 +1,7 @@
-import { postgresAdapter } from '@payloadcms/db-postgres'
+import { sqliteAdapter } from '@payloadcms/db-sqlite'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { ar } from '@payloadcms/translations/languages/ar'
+import { en } from '@payloadcms/translations/languages/en'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
@@ -18,15 +20,40 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
+  i18n: {
+    fallbackLanguage: 'ar',
+    supportedLanguages: { ar, en },
+  },
+  localization: {
+    defaultLocale: 'ar',
+    fallback: true,
+    locales: [
+      {
+        code: 'ar',
+        label: {
+          ar: 'العربية',
+          en: 'Arabic',
+        },
+        rtl: true,
+      },
+      {
+        code: 'en',
+        label: {
+          ar: 'الإنجليزية',
+          en: 'English',
+        },
+      },
+    ],
+  },
   collections: [Users, Media],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
-  db: postgresAdapter({
-    pool: {
-      connectionString: process.env.DATABASE_URL || '',
+  db: sqliteAdapter({
+    client: {
+      url: process.env.PAYLOAD_DATABASE_URL || 'file:./yaz-law.db',
     },
   }),
   sharp,

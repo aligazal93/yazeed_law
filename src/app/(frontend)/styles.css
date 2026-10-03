@@ -1,164 +1,107 @@
-:root {
-  --font-mono: 'Roboto Mono', monospace;
+@import "tailwindcss";
+
+@theme {
+  --font-primary: var(--font-ibm-plex);
+
+  --color-primary: #0D131B;
+  --color-secondary: #C9A96E;
+  --color-black: #000;
+  --color-darkGray: #94A3B8;
+  --color-grey: #CBD5E1;
+  --text-10: 10px;
+  --text-12: 12px;
+  --text-14: 14px;
+  --text-16: 16px;
+  --text-18: 18px;
+  --text-20: 20px;
+  --text-22: 22px;
+  --text-24: 24px;
+  --text-26: 26px;
+  --text-28: 28px;
 }
 
-* {
-  box-sizing: border-box;
+@utility bg-gold-gradient {
+  background: linear-gradient(109deg, #C9A96E 0%, #9E762B 100%);
 }
-
 html {
-  font-size: 18px;
-  line-height: 32px;
-
-  background: rgb(0, 0, 0);
-  -webkit-font-smoothing: antialiased;
-}
-
-html,
-body,
-#app {
-  height: 100%;
+  scroll-behavior: smooth;
 }
 
 body {
-  font-family: system-ui;
-  font-size: 18px;
-  line-height: 32px;
+  font-family: var(--font-ibm-plex), sans-serif;
+}
+@keyframes hero-background {
+  0% {
+    transform: scale(1.08);
+  }
 
-  margin: 0;
-  color: rgb(1000, 1000, 1000);
-
-  @media (max-width: 1024px) {
-    font-size: 15px;
-    line-height: 24px;
+  100% {
+    transform: scale(1);
   }
 }
 
-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
-
-h1 {
-  margin: 40px 0;
-  font-size: 64px;
-  line-height: 70px;
-  font-weight: bold;
-
-  @media (max-width: 1024px) {
-    margin: 24px 0;
-    font-size: 42px;
-    line-height: 42px;
+@keyframes hero-fade-up {
+  0% {
+    opacity: 0;
+    transform: translateY(24px);
   }
 
-  @media (max-width: 768px) {
-    font-size: 38px;
-    line-height: 38px;
-  }
-
-  @media (max-width: 400px) {
-    font-size: 32px;
-    line-height: 32px;
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-p {
-  margin: 24px 0;
+@keyframes hero-fade-down {
+  0% {
+    opacity: 0;
+    transform: translateY(-14px);
+  }
 
-  @media (max-width: 1024px) {
-    margin: calc(var(--base) * 0.75) 0;
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-a {
-  color: currentColor;
-
-  &:focus {
-    opacity: 0.8;
-    outline: none;
+@keyframes hero-scale-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.94);
   }
 
-  &:active {
-    opacity: 0.7;
-    outline: none;
+  100% {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
-svg {
-  vertical-align: middle;
+@utility animate-hero-background {
+  animation: hero-background 2.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.home {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  height: 100vh;
-  padding: 45px;
-  max-width: 1024px;
-  margin: 0 auto;
-  overflow: hidden;
+@utility animate-hero-fade-up {
+  opacity: 0;
+  animation: hero-fade-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
 
-  @media (max-width: 400px) {
-    padding: 24px;
-  }
+@utility animate-hero-fade-down {
+  opacity: 0;
+  animation: hero-fade-down 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
 
-  .content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    flex-grow: 1;
+@utility animate-hero-scale-in {
+  opacity: 0;
+  animation: hero-scale-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
 
-    h1 {
-      text-align: center;
-    }
-  }
-
-  .links {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    a {
-      text-decoration: none;
-      padding: 0.25rem 0.5rem;
-      border-radius: 4px;
-    }
-
-    .admin {
-      color: rgb(0, 0, 0);
-      background: rgb(1000, 1000, 1000);
-      border: 1px solid rgb(0, 0, 0);
-    }
-
-    .docs {
-      color: rgb(1000, 1000, 1000);
-      background: rgb(0, 0, 0);
-      border: 1px solid rgb(1000, 1000, 1000);
-    }
-  }
-
-  .footer {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    @media (max-width: 1024px) {
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    p {
-      margin: 0;
-    }
-
-    .codeLink {
-      text-decoration: none;
-      padding: 0 0.5rem;
-      background: rgb(60, 60, 60);
-      border-radius: 4px;
-    }
+@media (prefers-reduced-motion: reduce) {
+  .animate-hero-background,
+  .animate-hero-fade-up,
+  .animate-hero-fade-down,
+  .animate-hero-scale-in {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
