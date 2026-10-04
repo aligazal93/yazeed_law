@@ -8,13 +8,23 @@ const dirname = path.dirname(__filename)
 
 const nextConfig: NextConfig = {
   agentRules: false,
+
   images: {
     localPatterns: [
       {
         pathname: '/images/**',
       },
     ],
+
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.public.blob.vercel-storage.com',
+        pathname: '/**',
+      },
+    ],
   },
+
   webpack: (webpackConfig) => {
     webpackConfig.resolve.extensionAlias = {
       '.cjs': ['.cts', '.cjs'],
@@ -24,9 +34,12 @@ const nextConfig: NextConfig = {
 
     return webpackConfig
   },
+
   turbopack: {
     root: path.resolve(dirname),
   },
 }
 
-export default withPayload(nextConfig, { devBundleServerPackages: false })
+export default withPayload(nextConfig, {
+  devBundleServerPackages: false,
+})

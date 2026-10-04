@@ -87,8 +87,12 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: ('false' | 'none' | 'null') | false | null | ('ar' | 'en') | ('ar' | 'en')[];
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'site-settings': SiteSetting;
+  };
+  globalsSelect: {
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+  };
   locale: 'ar' | 'en';
   widgets: {
     collections: CollectionsWidget;
@@ -150,6 +154,8 @@ export interface User {
 export interface Media {
   id: number;
   alt: string;
+  prefix?: string | null;
+  _objectKey?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -265,6 +271,8 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  prefix?: T;
+  _objectKey?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -316,6 +324,48 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: number;
+  logo: number | Media;
+  address: string;
+  phone: string;
+  workingHours: string;
+  email: string;
+  whatsapp?: string | null;
+  facebook?: string | null;
+  linkedin?: string | null;
+  twitter?: string | null;
+  commercialRegistrationNumber?: string | null;
+  professionalLicenseNumber?: string | null;
+  copyright: string;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  logo?: T;
+  address?: T;
+  phone?: T;
+  workingHours?: T;
+  email?: T;
+  whatsapp?: T;
+  facebook?: T;
+  linkedin?: T;
+  twitter?: T;
+  commercialRegistrationNumber?: T;
+  professionalLicenseNumber?: T;
+  copyright?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

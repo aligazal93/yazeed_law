@@ -1,5 +1,6 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import { ar } from '@payloadcms/translations/languages/ar'
 import { en } from '@payloadcms/translations/languages/en'
 import path from 'path'
@@ -9,6 +10,7 @@ import sharp from 'sharp'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
+import { SiteSettings } from './globals/SiteSettings'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -16,6 +18,7 @@ const dirname = path.dirname(filename)
 export default buildConfig({
   admin: {
     user: Users.slug,
+
     importMap: {
       baseDir: path.resolve(dirname),
     },
@@ -23,6 +26,7 @@ export default buildConfig({
 
   i18n: {
     fallbackLanguage: 'ar',
+
     supportedLanguages: {
       ar,
       en,
@@ -32,17 +36,22 @@ export default buildConfig({
   localization: {
     defaultLocale: 'ar',
     fallback: true,
+
     locales: [
       {
         code: 'ar',
+
         label: {
           ar: 'العربية',
           en: 'Arabic',
         },
+
         rtl: true,
       },
+
       {
         code: 'en',
+
         label: {
           ar: 'الإنجليزية',
           en: 'English',
@@ -52,6 +61,8 @@ export default buildConfig({
   },
 
   collections: [Users, Media],
+
+  globals: [SiteSettings],
 
   editor: lexicalEditor(),
 
@@ -69,5 +80,21 @@ export default buildConfig({
 
   sharp,
 
-  plugins: [],
+  plugins: [
+    vercelBlobStorage({
+      enabled: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
+
+      collections: {
+        media: {
+          prefix: 'media',
+        },
+      },
+
+      token: process.env.BLOB_READ_WRITE_TOKEN,
+
+      clientUploads: true,
+
+      addRandomSuffix: true,
+    }),
+  ],
 })
