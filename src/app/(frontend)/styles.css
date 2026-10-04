@@ -105,3 +105,22 @@ body {
     transform: none !important;
   }
 }
+
+
+.testimonials-slider .swiper-pagination {
+  bottom: 0 !important;
+}
+
+.testimonials-slider .swiper-pagination-bullet {
+  width: 7px;
+  height: 7px;
+  background: rgba(255, 255, 255, 0.25);
+  opacity: 1;
+  transition: all 0.3s ease;
+}
+
+.testimonials-slider .swiper-pagination-bullet-active {
+  width: 24px;
+  border-radius: 999px;
+  background: #c9a96e;
+}

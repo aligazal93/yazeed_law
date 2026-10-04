@@ -1,15 +1,30 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import type { ComponentType } from 'react'
+
+import {
+  BookOpenIcon,
+  Briefcase,
+  HammerIcon,
+  MoveLeftIcon,
+  MoveRightIcon,
+  ShieldCheckIcon,
+} from '@animateicons/react/lucide'
+import { BankIcon, UserIcon } from '@animateicons/react/huge'
 
 import type { Locale } from '@/lib/getDictionary'
 import Container from './layouts/Container'
-import { Briefcase, MoveLeftIcon, MoveRightIcon } from '@animateicons/react/lucide'
 
 type ServicesProps = {
   locale: Locale
 }
 
-type IconType = 'business' | 'gavel' | 'bank' | 'users' | 'idea' | 'shield'
+type AnimatedIconProps = {
+  size?: number
+  duration?: number
+  color?: string
+  className?: string
+}
 
 type Service = {
   id: number
@@ -17,10 +32,18 @@ type Service = {
   description: string
   category: string
   href: string
-  icon: IconType
+  icon: ComponentType<AnimatedIconProps>
 }
 
-const content = {
+type ServicesContent = {
+  badge: string
+  title: string
+  description: string
+  action: string
+  services: Service[]
+}
+
+const content: Record<Locale, ServicesContent> = {
   ar: {
     badge: 'خدماتنا',
     title: 'مجالاتنا القانونية والممارسات',
@@ -35,54 +58,54 @@ const content = {
           'تأسيس الشركات، صياغة الاتفاقيات التجارية، الاستحواذ والاندماج، حوكمة مجالس الإدارة والامتثال للأنظمة التجارية المعاصرة.',
         category: 'تمثيل كامل',
         href: '/services/corporate-law',
-        icon: 'business',
+        icon: Briefcase,
       },
       {
         id: 2,
         title: 'التحكيم وفض المنازعات',
         description:
-          'تسوية النزاعات البديلة، التحكيم المحلي والدولي، المرافعة أمام هيئات التحكيم المعتمدة وتنفيذ أحكام المحكمين الوطنية والدولية.',
+          'تسوية النزاعات البديلة، التحكيم المحلي والدولي، والمرافعة أمام هيئات التحكيم وتنفيذ أحكام المحكمين.',
         category: 'محكمون معتمدون',
         href: '/services/arbitration',
-        icon: 'gavel',
+        icon: HammerIcon,
       },
       {
         id: 3,
         title: 'القانون المدني والعقاري',
         description:
-          'منازعات الملكية العقارية، عقود التطوير الإنشائي، نزاعات الإيجارات، صياغة العقود المدنية المعقدة والتعويضات عن الأضرار.',
+          'منازعات الملكية العقارية، عقود التطوير والإنشاء، نزاعات الإيجارات، وصياغة العقود المدنية والتعويضات.',
         category: 'حماية الأصول',
         href: '/services/real-estate',
-        icon: 'bank',
+        icon: BankIcon,
       },
       {
         id: 4,
         title: 'قضايا العمل والعمال',
         description:
-          'صياغة لوائح العمل الداخلية للمؤسسات، تسوية النزاعات العمالية، قضايا الفصل التعسفي ومكافآت نهاية الخدمة والتأمينات.',
+          'صياغة لوائح العمل الداخلية، تسوية النزاعات العمالية، قضايا الفصل التعسفي، ومكافآت نهاية الخدمة.',
         category: 'لجان العمل',
         href: '/services/labor-law',
-        icon: 'users',
+        icon: UserIcon,
       },
       {
         id: 5,
         title: 'الملكية الفكرية وبراءات الاختراع',
         description:
-          'تسجيل العلامات التجارية وحمايتها، براءات الاختراع وحقوق المؤلف، مكافحة التعدي على العلامات والملكية الفكرية ونقل التكنولوجيا.',
+          'تسجيل العلامات التجارية وحمايتها، براءات الاختراع وحقوق المؤلف، ومكافحة التعدي على حقوق الملكية الفكرية.',
         category: 'حماية الابتكار',
         href: '/services/intellectual-property',
-        icon: 'idea',
+        icon: BookOpenIcon,
       },
       {
         id: 6,
         title: 'القانون الجنائي وقضايا المال',
         description:
-          'الدفاع في قضايا الجرائم المالية والضريبية والجرائم الإلكترونية والمعلوماتية، الاحتيال التجاري والجرائم ذات الطابع الاقتصادي.',
+          'الدفاع في قضايا الجرائم المالية والضريبية والجرائم الإلكترونية والاحتيال التجاري والجرائم الاقتصادية.',
         category: 'دفاع استراتيجي',
         href: '/services/criminal-law',
-        icon: 'shield',
+        icon: ShieldCheckIcon,
       },
-    ] as Service[],
+    ],
   },
 
   en: {
@@ -97,10 +120,10 @@ const content = {
         id: 1,
         title: 'Corporate & Commercial Law',
         description:
-          'Company formation, commercial agreements, mergers and acquisitions, corporate governance and compliance with modern commercial regulations.',
+          'Company formation, commercial agreements, mergers and acquisitions, corporate governance and regulatory compliance.',
         category: 'Full Representation',
         href: '/services/corporate-law',
-        icon: 'business',
+        icon: Briefcase,
       },
       {
         id: 2,
@@ -109,34 +132,34 @@ const content = {
           'Alternative dispute resolution, local and international arbitration, representation before arbitration tribunals and enforcement of awards.',
         category: 'Certified Arbitrators',
         href: '/services/arbitration',
-        icon: 'gavel',
+        icon: HammerIcon,
       },
       {
         id: 3,
         title: 'Civil & Real Estate Law',
         description:
-          'Property disputes, construction development agreements, lease disputes, complex civil contracts and compensation claims.',
+          'Property disputes, development agreements, lease disputes, complex civil contracts and compensation claims.',
         category: 'Asset Protection',
         href: '/services/real-estate',
-        icon: 'bank',
+        icon: BankIcon,
       },
       {
         id: 4,
         title: 'Labor & Employment Law',
         description:
-          'Internal employment regulations, labor dispute resolution, wrongful termination cases, end-of-service benefits and employment matters.',
+          'Employment regulations, labor dispute resolution, wrongful termination cases and end-of-service benefits.',
         category: 'Employment Law',
         href: '/services/labor-law',
-        icon: 'users',
+        icon: UserIcon,
       },
       {
         id: 5,
         title: 'Intellectual Property',
         description:
-          'Trademark registration and protection, patents, copyrights, infringement disputes, intellectual property protection and technology transfer.',
+          'Trademark registration and protection, patents, copyrights and intellectual property infringement disputes.',
         category: 'Innovation Protection',
         href: '/services/intellectual-property',
-        icon: 'idea',
+        icon: BookOpenIcon,
       },
       {
         id: 6,
@@ -145,11 +168,11 @@ const content = {
           'Defense in financial, tax and cybercrime cases, commercial fraud and complex economic crime matters.',
         category: 'Strategic Defense',
         href: '/services/criminal-law',
-        icon: 'shield',
+        icon: ShieldCheckIcon,
       },
-    ] as Service[],
+    ],
   },
-} as const
+}
 
 export default function Services({ locale }: ServicesProps) {
   const data = content[locale]
@@ -159,7 +182,7 @@ export default function Services({ locale }: ServicesProps) {
       className="relative isolate overflow-hidden bg-[#030C19] py-16 sm:py-20 lg:py-24 xl:py-28"
       dir={locale === 'ar' ? 'rtl' : 'ltr'}
     >
-      {/* Background Image */}
+      {/* Background */}
       <Image
         src="/images/bg.png"
         alt=""
@@ -168,9 +191,11 @@ export default function Services({ locale }: ServicesProps) {
         className="-z-30 object-cover object-center"
       />
 
-      {/* Background overlays */}
+      {/* Overlays */}
       <div className="pointer-events-none absolute inset-0 -z-20 bg-[#030C19]/72" />
+
       <div className="pointer-events-none absolute inset-0 -z-20 bg-[linear-gradient(180deg,#030C19_0%,rgba(3,12,25,0.65)_28%,rgba(3,12,25,0.68)_65%,#030C19_100%)]" />
+
       <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_35%,rgba(23,35,52,0.10)_0%,rgba(3,12,25,0.45)_68%,#030C19_100%)]" />
 
       <Container className="relative z-10">
@@ -189,48 +214,62 @@ export default function Services({ locale }: ServicesProps) {
           </p>
         </div>
 
-        {/* Services Grid */}
+        {/* Services */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
-          {data.services.map((service) => (
-            <article
-              key={service.id}
-              className="group relative flex min-h-[235px] flex-col overflow-hidden rounded-[16px] border border-white/[0.08] bg-[linear-gradient(135deg,rgba(255,255,255,0.045)_0%,rgba(255,255,255,0.018)_100%)] p-5 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 hover:border-secondary/30 hover:bg-white/[0.055] sm:p-6"
-            >
-              {/* subtle hover glow */}
-              <div className="pointer-events-none absolute -top-16 end-[-70px] size-40 rounded-full bg-secondary/[0.06] opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100" />
+          {data.services.map((service) => {
+            const Icon = service.icon
+            return (
+              <article
+                key={service.id}
+                className="group relative flex min-h-[235px] flex-col overflow-hidden rounded-[16px] border border-white/[0.08] bg-[linear-gradient(135deg,rgba(255,255,255,0.045)_0%,rgba(255,255,255,0.018)_100%)] p-5 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 hover:border-secondary/30 hover:bg-white/[0.055] sm:p-6"
+              >
+                {/* Hover Glow */}
+                <div className="pointer-events-none absolute -top-16 end-[-70px] size-40 rounded-full bg-secondary/[0.06] opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100" />
 
-              {/* Icon */}
-              <div className="relative z-10 mb-6 text-secondary flex size-14 items-center justify-center  rounded-[10px] border border-secondary/20 bg-[linear-gradient(145deg,rgba(201,169,110,0.20),rgba(162,123,50,0.12))] text-secondary shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
-                <Briefcase size={20} duration={2} />
-              </div>
-
-              {/* Content */}
-              <div className="relative z-10 flex flex-1 flex-col">
-                <h3 className="text-17 leading-7 font-bold text-white transition-colors duration-300 group-hover:text-secondary sm:text-18">
-                  {service.title}
-                </h3>
-
-                <p className="mt-2 flex-1 text-12 leading-6 font-normal text-white/65 sm:text-13">
-                  {service.description}
-                </p>
-
-                {/* Footer */}
-                <div className="mt-5 flex items-center justify-between border-t border-white/[0.07] pt-4">
-                  <Link
-                    href={`/${locale}${service.href}`}
-                    className="group/link inline-flex items-center gap-2 text-14 font-medium text-secondary transition-all duration-300 "
-                  >
-                    <span>{data.action}</span>
-                    {locale === 'ar' ? (
-                      <MoveLeftIcon size={18} duration={1} color="#ECD16E" />
-                    ) : (
-                      <MoveRightIcon size={18} duration={1} color="#ECD16E" />
-                    )}
-                  </Link>
+                {/* Icon */}
+                <div className="relative z-10 mb-6 flex size-14 items-center justify-center rounded-[10px] border border-secondary/20 bg-[linear-gradient(145deg,rgba(201,169,110,0.20),rgba(162,123,50,0.12))] text-secondary shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
+                  <Icon size={22} duration={1} color="currentColor" />
                 </div>
-              </div>
-            </article>
-          ))}
+
+                {/* Content */}
+                <div className="relative z-10 flex flex-1 flex-col">
+                  <h3 className="text-17 leading-7 font-bold text-white transition-colors duration-300 group-hover:text-secondary sm:text-18">
+                    {service.title}
+                  </h3>
+
+                  <p className="mt-2 flex-1 text-12 leading-6 font-normal text-white/65 sm:text-13">
+                    {service.description}
+                  </p>
+
+                  {/* Card Footer */}
+                  <div className="mt-5 flex items-center justify-between border-t border-white/[0.07] pt-4">
+                    <Link
+                      href={`/${locale}${service.href}`}
+                      className="group/link inline-flex items-center gap-2 text-13 font-medium text-secondary transition-colors duration-300 hover:text-white sm:text-14"
+                    >
+                      <span>{data.action}</span>
+
+                      {locale === 'ar' ? (
+                        <MoveLeftIcon
+                          size={18}
+                          duration={1}
+                          color="currentColor"
+                          className="transition-transform duration-300 group-hover/link:-translate-x-1"
+                        />
+                      ) : (
+                        <MoveRightIcon
+                          size={18}
+                          duration={1}
+                          color="currentColor"
+                          className="transition-transform duration-300 group-hover/link:translate-x-1"
+                        />
+                      )}
+                    </Link>
+                  </div>
+                </div>
+              </article>
+            )
+          })}
         </div>
       </Container>
     </section>

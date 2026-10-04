@@ -1,8 +1,13 @@
 import AboutUs from '@/components/AboutUs'
+import Articles from '@/components/Articles'
 import Hero from '@/components/Hero'
+import HowWorking from '@/components/HowWorking'
 import Header from '@/components/layouts/Header'
 import UpBar from '@/components/layouts/UpBar'
+import Partnerships from '@/components/Partnerships'
 import Services from '@/components/Services'
+import Testimonials from '@/components/Testimonials'
+import WhyUs from '@/components/WhyUs'
 import { getDictionary } from '@/lib/getDictionary'
 import { notFound } from 'next/navigation'
 
@@ -26,11 +31,14 @@ export default async function LocalizedHomePage({
 
   return (
     <>
-      <UpBar locale={locale} />
-      <Header locale={locale} />
       <Hero locale={locale} />
       <AboutUs locale={locale} />
       <Services locale={locale} />
+      <HowWorking locale={locale} />
+      <WhyUs locale={locale} />
+      <Partnerships locale={locale} />
+      <Testimonials locale={locale} />
+      <Articles locale={locale} />
     </>
   )
 }
