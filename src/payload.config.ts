@@ -11,6 +11,17 @@ import sharp from 'sharp'
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { SiteSettings } from './globals/SiteSettings'
+import { Hero } from './globals/Hero'
+import { Stats } from './globals/Stats'
+import { Documents } from './collections/Documents'
+import { AboutUs } from './globals/AboutUs'
+import { Services } from './collections/Services'
+import { HowWorking } from './globals/HowWorking'
+import { WhyUs } from './globals/WhyUs'
+import { Partners } from './collections/Partners'
+import { AccreditationsTrust } from './collections/AccreditationsTrust'
+import { Articles } from './collections/Articles'
+import { Testimonials } from './globals/Testimonials'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -60,9 +71,9 @@ export default buildConfig({
     ],
   },
 
-  collections: [Users, Media],
+  collections: [Users, Media, Documents, Services, Partners, AccreditationsTrust, Articles],
 
-  globals: [SiteSettings],
+  globals: [SiteSettings, Hero, Stats, AboutUs, HowWorking, WhyUs, Testimonials],
 
   editor: lexicalEditor(),
 

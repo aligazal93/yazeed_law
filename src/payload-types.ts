@@ -69,6 +69,11 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    documents: Document;
+    services: Service;
+    partners: Partner;
+    'accreditations-trust': AccreditationsTrust;
+    articles: Article;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -78,6 +83,11 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    documents: DocumentsSelect<false> | DocumentsSelect<true>;
+    services: ServicesSelect<false> | ServicesSelect<true>;
+    partners: PartnersSelect<false> | PartnersSelect<true>;
+    'accreditations-trust': AccreditationsTrustSelect<false> | AccreditationsTrustSelect<true>;
+    articles: ArticlesSelect<false> | ArticlesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -89,9 +99,21 @@ export interface Config {
   fallbackLocale: ('false' | 'none' | 'null') | false | null | ('ar' | 'en') | ('ar' | 'en')[];
   globals: {
     'site-settings': SiteSetting;
+    hero: Hero;
+    stats: Stat;
+    'about-us': AboutUs;
+    'how-working': HowWorking;
+    'why-us': WhyUs;
+    testimonials: Testimonial;
   };
   globalsSelect: {
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    hero: HeroSelect<false> | HeroSelect<true>;
+    stats: StatsSelect<false> | StatsSelect<true>;
+    'about-us': AboutUsSelect<false> | AboutUsSelect<true>;
+    'how-working': HowWorkingSelect<false> | HowWorkingSelect<true>;
+    'why-us': WhyUsSelect<false> | WhyUsSelect<true>;
+    testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
   };
   locale: 'ar' | 'en';
   widgets: {
@@ -170,6 +192,90 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "documents".
+ */
+export interface Document {
+  id: number;
+  title: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services".
+ */
+export interface Service {
+  id: number;
+  icon: number | Media;
+  title: string;
+  /**
+   * مثال: corporate-law
+   */
+  slug: string;
+  description: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "partners".
+ */
+export interface Partner {
+  id: number;
+  image: number | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "accreditations-trust".
+ */
+export interface AccreditationsTrust {
+  id: number;
+  image: number | Media;
+  title: string;
+  content: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articles".
+ */
+export interface Article {
+  id: number;
+  image: number | Media;
+  title: string;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  date: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -199,6 +305,26 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'documents';
+        value: number | Document;
+      } | null)
+    | ({
+        relationTo: 'services';
+        value: number | Service;
+      } | null)
+    | ({
+        relationTo: 'partners';
+        value: number | Partner;
+      } | null)
+    | ({
+        relationTo: 'accreditations-trust';
+        value: number | AccreditationsTrust;
+      } | null)
+    | ({
+        relationTo: 'articles';
+        value: number | Article;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -287,6 +413,68 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "documents_select".
+ */
+export interface DocumentsSelect<T extends boolean = true> {
+  title?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services_select".
+ */
+export interface ServicesSelect<T extends boolean = true> {
+  icon?: T;
+  title?: T;
+  slug?: T;
+  description?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "partners_select".
+ */
+export interface PartnersSelect<T extends boolean = true> {
+  image?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "accreditations-trust_select".
+ */
+export interface AccreditationsTrustSelect<T extends boolean = true> {
+  image?: T;
+  title?: T;
+  content?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articles_select".
+ */
+export interface ArticlesSelect<T extends boolean = true> {
+  image?: T;
+  title?: T;
+  content?: T;
+  date?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -348,6 +536,126 @@ export interface SiteSetting {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hero".
+ */
+export interface Hero {
+  id: number;
+  badge: string;
+  title: string;
+  description: string;
+  primaryButton: {
+    label: string;
+    url: string;
+  };
+  secondaryButton: {
+    label: string;
+    url: string;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "stats".
+ */
+export interface Stat {
+  id: number;
+  items: {
+    value: string;
+    title: string;
+    id?: string | null;
+  }[];
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-us".
+ */
+export interface AboutUs {
+  id: number;
+  image: number | Media;
+  badge: string;
+  title: string;
+  description: string;
+  featuredItems: {
+    title: string;
+    id?: string | null;
+  }[];
+  profile: {
+    label: string;
+    file: number | Document;
+  };
+  foundation: {
+    year: string;
+    title: string;
+    description: string;
+  };
+  experienceStat: {
+    value: string;
+    title: string;
+  };
+  casesStat: {
+    value: string;
+    title: string;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "how-working".
+ */
+export interface HowWorking {
+  id: number;
+  items?:
+    | {
+        title: string;
+        content: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "why-us".
+ */
+export interface WhyUs {
+  id: number;
+  items?:
+    | {
+        icon: 'shield' | 'clock' | 'chart' | 'users';
+        title: string;
+        content: string;
+        id?: string | null;
+      }[]
+    | null;
+  managerQuote: string;
+  managerName: string;
+  managerPosition: string;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials".
+ */
+export interface Testimonial {
+  id: number;
+  items: {
+    rate: number;
+    content: string;
+    name: string;
+    position: string;
+    id?: string | null;
+  }[];
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-settings_select".
  */
 export interface SiteSettingsSelect<T extends boolean = true> {
@@ -363,6 +671,144 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   commercialRegistrationNumber?: T;
   professionalLicenseNumber?: T;
   copyright?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hero_select".
+ */
+export interface HeroSelect<T extends boolean = true> {
+  badge?: T;
+  title?: T;
+  description?: T;
+  primaryButton?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+      };
+  secondaryButton?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "stats_select".
+ */
+export interface StatsSelect<T extends boolean = true> {
+  items?:
+    | T
+    | {
+        value?: T;
+        title?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-us_select".
+ */
+export interface AboutUsSelect<T extends boolean = true> {
+  image?: T;
+  badge?: T;
+  title?: T;
+  description?: T;
+  featuredItems?:
+    | T
+    | {
+        title?: T;
+        id?: T;
+      };
+  profile?:
+    | T
+    | {
+        label?: T;
+        file?: T;
+      };
+  foundation?:
+    | T
+    | {
+        year?: T;
+        title?: T;
+        description?: T;
+      };
+  experienceStat?:
+    | T
+    | {
+        value?: T;
+        title?: T;
+      };
+  casesStat?:
+    | T
+    | {
+        value?: T;
+        title?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "how-working_select".
+ */
+export interface HowWorkingSelect<T extends boolean = true> {
+  items?:
+    | T
+    | {
+        title?: T;
+        content?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "why-us_select".
+ */
+export interface WhyUsSelect<T extends boolean = true> {
+  items?:
+    | T
+    | {
+        icon?: T;
+        title?: T;
+        content?: T;
+        id?: T;
+      };
+  managerQuote?: T;
+  managerName?: T;
+  managerPosition?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials_select".
+ */
+export interface TestimonialsSelect<T extends boolean = true> {
+  items?:
+    | T
+    | {
+        rate?: T;
+        content?: T;
+        name?: T;
+        position?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

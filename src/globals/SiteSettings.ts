@@ -1,3 +1,4 @@
+import { ADMIN_GROUPS } from '@/constants/adminGroups'
 import type { GlobalConfig } from 'payload'
 
 export const SiteSettings: GlobalConfig = {
@@ -6,7 +7,7 @@ export const SiteSettings: GlobalConfig = {
   label: 'إعدادات الموقع',
 
   admin: {
-    group: 'إعدادات الموقع',
+    group: ADMIN_GROUPS.SITE_SETTINGS,
   },
 
   access: {
