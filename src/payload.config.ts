@@ -30,6 +30,19 @@ export default buildConfig({
   admin: {
     user: Users.slug,
 
+    components: {
+      graphics: {
+        Icon: '/components/admin/Branding#AdminIcon',
+        Logo: '/components/admin/Branding#AdminLogo',
+      },
+    },
+
+    meta: {
+      description: 'لوحة إدارة موقع شركة يزيد عبد الرحمن الزهراني',
+      icons: [{ rel: 'icon', url: '/images/logo.png' }],
+      titleSuffix: ' | YAZ Law',
+    },
+
     importMap: {
       baseDir: path.resolve(dirname),
     },

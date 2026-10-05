@@ -1,0 +1,48 @@
+:root {
+  --yaz-navy: #071a2b;
+  --yaz-gold: #c9a96e;
+  --yaz-cream: #f5efe4;
+}
+
+.yaz-admin-logo {
+  align-items: center;
+  background: var(--yaz-navy);
+  border: 1px solid color-mix(in srgb, var(--yaz-gold) 42%, transparent);
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  padding: 14px 18px;
+  width: min(100%, 340px);
+
+  img {
+    display: block;
+    height: auto;
+    max-width: 100%;
+    width: 290px;
+  }
+}
+
+.yaz-admin-icon {
+  align-items: center;
+  background: var(--yaz-navy);
+  border-radius: 8px;
+  display: inline-flex;
+  height: 38px;
+  justify-content: flex-start;
+  overflow: hidden;
+  width: 38px;
+
+  img {
+    display: block;
+    flex: none;
+    height: 38px;
+    max-width: none;
+    width: auto;
+  }
+}
+
+// Keep the admin shell aligned with the site's visual identity.
+.btn--style-primary {
+  --style-bg-color: var(--yaz-gold);
+  --style-color: var(--yaz-navy);
+}
