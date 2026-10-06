@@ -8,12 +8,14 @@ import {
 
 import Container from './Container'
 import { getDictionary, Locale } from '@/lib/getDictionary'
+import type { SiteSetting } from '@/payload-types'
 
 type UpBarProps = {
   locale: Locale
+  settings: SiteSetting
 }
 
-export default async function UpBar({ locale }: UpBarProps) {
+export default async function UpBar({ locale, settings }: UpBarProps) {
   const dictionary = await getDictionary(locale)
   return (
     <div className="hidden bg-primary p-3 lg:block">
@@ -27,11 +29,11 @@ export default async function UpBar({ locale }: UpBarProps) {
               </li>
               <li className="flex gap-2 items-center border-s-2 px-2 border-secondary text-10 lg:text-12 text-grey font-medium">
                 <ClockIcon size={14} duration={1} color="#C9A96E" />
-                الأحد – الخميس · 9:00 ص – 6:00 م
+                {settings.workingHours}
               </li>
               <li className="flex gap-2 items-center border-s-2 border-secondary px-2 text-10 lg:text-12 text-grey font-medium">
                 <MapPinCheckIcon size={14} duration={1} color="#C9A96E" />
-                الرياض , شارع الملك فيصل 4567
+                {settings.address}
               </li>
             </ul>
           </div>
@@ -39,11 +41,11 @@ export default async function UpBar({ locale }: UpBarProps) {
             <ul className="flex items-center gap-4">
               <li className="flex gap-2 items-center  px-2 text-10 lg:text-12 text-grey font-medium">
                 <MailIcon size={16} duration={1} color="#C9A96E" />
-                info@almizan-law.com
+                {settings.email}
               </li>
               <li className="flex gap-2  items-center border-s-2 border-secondary px-2 text-10 lg:text-12 text-grey font-medium">
                 <PhoneIcon size={16} duration={1} color="#C9A96E" />
-                +966512345678
+                {settings.phone}
               </li>
             </ul>
           </div>

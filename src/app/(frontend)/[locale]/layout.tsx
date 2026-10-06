@@ -9,6 +9,7 @@ import Header from '@/components/layouts/Header'
 import Footer from '@/components/layouts/Footer'
 
 import { isLocale, locales, type Locale } from '@/lib/getDictionary'
+import { getSiteSettings } from '@/lib/api'
 
 import '../styles.css'
 
@@ -74,16 +75,18 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
     notFound()
   }
 
+  const siteSettings = await getSiteSettings(locale)
+
   return (
     <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'}>
       <body className={`${ibmPlex.variable} bg-primary text-white`}>
-        <UpBar locale={locale} />
+        <UpBar locale={locale} settings={siteSettings} />
 
-        <Header locale={locale} />
+        <Header locale={locale} settings={siteSettings} />
 
         <main>{children}</main>
 
-        <Footer locale={locale} />
+        <Footer locale={locale} settings={siteSettings} />
       </body>
     </html>
   )

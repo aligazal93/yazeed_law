@@ -3,17 +3,11 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import Container from './Container'
 import { Globe02Icon, Menu01 } from '@animateicons/react/huge'
-import {
-  CircleDotIcon,
-  ClockIcon,
-  MailIcon,
-  MapPinCheckIcon,
-  PhoneIcon,
-} from '@animateicons/react/lucide'
+import { ClockIcon, MailIcon, MapPinCheckIcon, PhoneIcon } from '@animateicons/react/lucide'
 
 type Locale = 'ar' | 'en'
 
@@ -31,9 +25,16 @@ type HeaderClientProps = {
   locale: Locale
   labels: HeaderLabels
   appointmentTimes: string
+  settings: {
+    logoUrl: string
+    workingHours: string
+    address: string
+    email: string
+    phone: string
+  }
 }
 
-export default function HeaderClient({ locale, labels, appointmentTimes }: HeaderClientProps) {
+export default function HeaderClient({ locale, labels, settings }: HeaderClientProps) {
   const pathname = usePathname()
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -77,10 +78,6 @@ export default function HeaderClient({ locale, labels, appointmentTimes }: Heade
     return pathname.startsWith(href)
   }
 
-  useEffect(() => {
-    setMobileMenuOpen(false)
-  }, [pathname])
-
   return (
     <header
       className="relative z-50 border-b border-white/5 bg-white/[0.01] backdrop-blur-md"
@@ -93,7 +90,7 @@ export default function HeaderClient({ locale, labels, appointmentTimes }: Heade
           <div className="flex w-[220px] items-center">
             <Link href={`/${locale}`}>
               <Image
-                src="/images/logo.png"
+                src={settings.logoUrl}
                 alt="Yaz Law"
                 width={155}
                 height={55}
@@ -151,7 +148,7 @@ export default function HeaderClient({ locale, labels, appointmentTimes }: Heade
         <div className="flex h-[68px] items-center justify-between lg:hidden">
           <Link href={`/${locale}`}>
             <Image
-              src="/images/logo.png"
+              src={settings.logoUrl}
               alt="Yaz Law"
               width={130}
               height={50}
@@ -198,6 +195,7 @@ export default function HeaderClient({ locale, labels, appointmentTimes }: Heade
                   <li key={link.href} className="border-b border-white/5 last:border-none">
                     <Link
                       href={link.href}
+                      onClick={() => setMobileMenuOpen(false)}
                       className={`flex py-4 text-15 font-medium transition ${
                         active ? 'text-secondary' : 'text-grey hover:text-secondary'
                       }`}
@@ -224,9 +222,7 @@ export default function HeaderClient({ locale, labels, appointmentTimes }: Heade
                     </span>
 
                     <span className="text-12 leading-5 font-medium text-grey">
-                      {locale === 'ar'
-                        ? 'الأحد – الخميس · 9:00 ص – 6:00 م'
-                        : 'Sunday – Thursday · 9:00 AM – 6:00 PM'}
+                      {settings.workingHours}
                     </span>
                   </div>
                 </div>
@@ -243,16 +239,14 @@ export default function HeaderClient({ locale, labels, appointmentTimes }: Heade
                     </span>
 
                     <span className="text-12 leading-5 font-medium text-grey">
-                      {locale === 'ar'
-                        ? 'الرياض، شارع الملك فيصل 4567'
-                        : '4567 King Faisal St, Riyadh'}
+                      {settings.address}
                     </span>
                   </div>
                 </div>
 
                 {/* Email */}
                 <a
-                  href="mailto:info@almizan-law.com"
+                  href={`mailto:${settings.email}`}
                   className="flex items-start gap-3 rounded-xl border border-white/5 bg-white/[0.03] p-3 transition duration-300 hover:border-secondary/30 hover:bg-secondary/5"
                 >
                   <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-secondary/10 text-secondary">
@@ -265,14 +259,14 @@ export default function HeaderClient({ locale, labels, appointmentTimes }: Heade
                     </span>
 
                     <span dir="ltr" className="break-all text-12 font-medium text-grey">
-                      info@almizan-law.com
+                      {settings.email}
                     </span>
                   </div>
                 </a>
 
                 {/* Phone */}
                 <a
-                  href="tel:+966512345678"
+                  href={`tel:${settings.phone}`}
                   className="flex items-start gap-3 rounded-xl border border-white/5 bg-white/[0.03] p-3 transition duration-300 hover:border-secondary/30 hover:bg-secondary/5"
                 >
                   <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-secondary/10 text-secondary">
@@ -285,7 +279,7 @@ export default function HeaderClient({ locale, labels, appointmentTimes }: Heade
                     </span>
 
                     <span dir="ltr" className="text-12 font-medium text-grey">
-                      +966 51 234 5678
+                      {settings.phone}
                     </span>
                   </div>
                 </a>

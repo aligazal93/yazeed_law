@@ -2,112 +2,25 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 import type { Locale } from '@/lib/getDictionary'
+import { getAssetUrl } from '@/lib/api'
+import type { AboutUs as AboutUsData } from '@/payload-types'
 import Container from './layouts/Container'
 import { CheckIcon, ClockIcon, DownloadIcon } from '@animateicons/react/lucide'
-import { CheckListIcon } from '@animateicons/react/huge'
 
-type AboutFeature = {
+type _AboutFeature = {
   id: number
   text: string
 }
 
 type AboutUsProps = {
   locale: Locale
+  data: AboutUsData
 }
 
-const content = {
-  ar: {
-    badge: 'عن المكتب',
-    title: 'ريادة قانونية بلا حدود',
-    highlightedTitle: 'برؤية استراتيجية معاصرة',
-
-    paragraphOne:
-      'تأسس مكتب الميزان للمحاماة والاستشارات القانونية عام 1998، بهدف تقديم خدمات قانونية متكاملة تواكب أحدث المعايير المهنية العالمية، ليصبح اليوم كيانًا قانونيًا بارزًا يجمع بين كبار المحامين والمستشارين ذوي الخبرات الأكاديمية.',
-
-    paragraphTwo:
-      'نؤمن أن العدالة والوقاية القانونية تمثلان الركيزة لكل منشأة ناجحة، ونسعى جاهدين لتقديم حلول مبتكرة واستشارات استباقية تحمي العملاء من النزاعات قبل وقوعها، وتمكنهم من مواجهة تحديات البيئة القانونية بكفاءة.',
-
-    buttonLabel: 'تحميل الملف التعريفي',
-    buttonHref: '/about',
-
-    year: '1998',
-    yearLabel: 'سنة التأسيس',
-    yearDescription: 'رحلة في ترسيخ العدالة وترسيخ الحقوق أمام المحاكم وهيئات التحكيم.',
-
-    casesValue: '1,200+',
-    casesLabel: 'قضية ناجحة',
-
-    yearsValue: '+25',
-    yearsLabel: 'عاماً من الخبرة',
-
-    features: [
-      {
-        id: 1,
-        text: 'خبرة قانونية راسخة في شتى فروع القانون',
-      },
-      {
-        id: 2,
-        text: 'شبكة تعاون استشارية إقليمية ودولية',
-      },
-      {
-        id: 3,
-        text: 'نخبة من المحامين والمستشارين المتخصصين',
-      },
-      {
-        id: 4,
-        text: 'تقارير دورية ورؤية شاملة للملف القانوني',
-      },
-    ] as AboutFeature[],
-  },
-
-  en: {
-    badge: 'About Us',
-    title: 'Legal Leadership Without Limits',
-    highlightedTitle: 'With a Contemporary Strategic Vision',
-
-    paragraphOne:
-      'Al Mizan Law Firm was established in 1998 with the goal of delivering integrated legal services that align with the latest international professional standards, becoming a distinguished legal entity bringing together senior lawyers and consultants with strong academic expertise.',
-
-    paragraphTwo:
-      'We believe that justice and legal protection are the foundation of every successful organization. We work diligently to provide innovative legal solutions and proactive consultations that protect clients before disputes arise and empower them to face legal challenges efficiently.',
-
-    buttonLabel: 'Download Company Profile',
-    buttonHref: '/about',
-
-    year: '1998',
-    yearLabel: 'Year of Establishment',
-    yearDescription:
-      'A journey dedicated to advancing justice and safeguarding rights before courts and arbitration bodies.',
-
-    casesValue: '1,200+',
-    casesLabel: 'Successful Cases',
-
-    yearsValue: '+25',
-    yearsLabel: 'Years of Experience',
-
-    features: [
-      {
-        id: 1,
-        text: 'Solid legal expertise across multiple practice areas',
-      },
-      {
-        id: 2,
-        text: 'Regional and international advisory cooperation network',
-      },
-      {
-        id: 3,
-        text: 'A distinguished team of specialized lawyers and consultants',
-      },
-      {
-        id: 4,
-        text: 'Periodic reports and a comprehensive legal case vision',
-      },
-    ] as AboutFeature[],
-  },
-} as const
-
-export default function AboutUs({ locale }: AboutUsProps) {
-  const data = content[locale]
+export default function AboutUs({ locale, data }: AboutUsProps) {
+  const imageUrl = getAssetUrl(data.image) ?? '/images/about.png'
+  const profileUrl = getAssetUrl(data.profile.file) ?? '#'
+  const paragraphs = data.description.split(/\n\s*\n/).filter(Boolean)
 
   return (
     <section
@@ -149,30 +62,28 @@ export default function AboutUs({ locale }: AboutUsProps) {
 
             {/* Heading */}
             <h2 className="max-w-[650px] text-[30px] leading-[1.35] font-bold text-white sm:text-[36px] md:text-[40px] lg:text-[44px] xl:text-[48px]">
-              <span className="block">{data.title}</span>
-
-              <span className="mt-1 block bg-[linear-gradient(109deg,#E6C47D_0%,#A27B32_100%)] bg-clip-text text-transparent">
-                {data.highlightedTitle}
+              <span className="block bg-[linear-gradient(109deg,#fff_0%,#E6C47D_75%,#A27B32_100%)] bg-clip-text text-transparent">
+                {data.title}
               </span>
             </h2>
 
             {/* Description */}
             <div className="mt-6 max-w-[700px] space-y-5 text-14 leading-7 font-normal text-white/70 sm:text-15 lg:text-16 lg:leading-8">
-              <p>{data.paragraphOne}</p>
-
-              <p>{data.paragraphTwo}</p>
+              {paragraphs.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
             </div>
 
             {/* Features */}
             <div className="mt-8 grid gap-x-8 gap-y-4 sm:grid-cols-2">
-              {data.features.map((feature) => (
-                <div key={feature.id} className="flex items-start gap-3">
+              {data.featuredItems.map((feature, index) => (
+                <div key={feature.id ?? index} className="flex items-start gap-3">
                   <div className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-secondary/40 text-secondary">
                     <CheckIcon size={16} duration={2} color="#E6C47D" />
                   </div>
 
                   <p className="text-13 leading-6 font-medium text-white/80 sm:text-14">
-                    {feature.text}
+                    {feature.title}
                   </p>
                 </div>
               ))}
@@ -181,12 +92,14 @@ export default function AboutUs({ locale }: AboutUsProps) {
             {/* Button */}
             <div className="mt-8">
               <Link
-                href={`/${locale}${data.buttonHref}`}
+                href={profileUrl}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-secondary/50 bg-secondary/[0.03] px-7 text-14 font-medium text-secondary transition-all duration-300 hover:-translate-y-0.5 hover:border-secondary hover:bg-secondary/10 hover:text-white"
               >
                 <DownloadIcon size={20} duration={2} color="#E6C47D" />
 
-                {data.buttonLabel}
+                {data.profile.label}
               </Link>
             </div>
           </div>
@@ -218,7 +131,7 @@ export default function AboutUs({ locale }: AboutUsProps) {
               <div className="relative z-10 mx-auto w-full max-w-[440px]">
                 <div className="relative overflow-hidden rounded-[20px] border border-white/10 bg-[#081221] shadow-[0_25px_80px_rgba(0,0,0,0.40)]">
                   <Image
-                    src="/images/about.png"
+                    src={imageUrl}
                     alt={locale === 'ar' ? 'عن مكتب المحاماة' : 'About Yaz Law'}
                     width={700}
                     height={820}
@@ -234,15 +147,15 @@ export default function AboutUs({ locale }: AboutUsProps) {
                   ========================================== */}
                   <div className="absolute inset-x-4 bottom-6 text-start z-20 rounded-[18px]  p-4 text-center shadow-[0_15px_40px_rgba(0,0,0,0.30)] backdrop-blur-xl sm:inset-x-6 sm:bottom-4 sm:p-4">
                     <div className="text-[38px] leading-none font-bold tracking-[0.08em] text-secondary  sm:text-[38px]">
-                      {data.year}
+                      {data.foundation.year}
                     </div>
 
                     <div className="mt-2 text-13 font-semibold text-white sm:text-14">
-                      {data.yearLabel}
+                      {data.foundation.title}
                     </div>
 
                     <p className="mx-auto mt-2  text-10 leading-5 text-white/50 sm:text-11">
-                      {data.yearDescription}
+                      {data.foundation.description}
                     </p>
                   </div>
                 </div>
@@ -257,11 +170,11 @@ export default function AboutUs({ locale }: AboutUsProps) {
                     </div>
                     <div>
                       <div className="text-14 leading-none font-bold text-white sm:text-16">
-                        {data.casesValue}
+                        {data.casesStat.value}
                       </div>
 
                       <div className="mt-1 text-9 font-medium text-secondary sm:text-10">
-                        {data.casesLabel}
+                        {data.casesStat.title}
                       </div>
                     </div>
                   </div>
@@ -274,11 +187,11 @@ export default function AboutUs({ locale }: AboutUsProps) {
                     </div>
                     <div>
                       <div className="text-14 leading-none font-bold text-white sm:text-16">
-                        {data.yearsValue}
+                        {data.experienceStat.value}
                       </div>
 
                       <div className="mt-1 text-9 font-medium text-secondary sm:text-10">
-                        {data.yearsLabel}
+                        {data.experienceStat.title}
                       </div>
                     </div>
                   </div>

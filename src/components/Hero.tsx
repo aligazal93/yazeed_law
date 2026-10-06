@@ -2,32 +2,16 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 import type { Locale } from '@/lib/getDictionary'
+import type { Hero as HeroData, Stat } from '@/payload-types'
 import Container from './layouts/Container'
 
 type HeroProps = {
   locale: Locale
+  data: HeroData
+  stats: Stat
 }
 
-const stats = [
-  {
-    value: '+25',
-    label: 'عاماً من الريادة',
-  },
-  {
-    value: '+1250',
-    label: 'قضية ناجحة ومكتملة',
-  },
-  {
-    value: '+250',
-    label: 'محامياً ومستشاراً خبيراً',
-  },
-  {
-    value: '95%',
-    label: 'نسبة رضاء ونجاح العملاء',
-  },
-]
-
-export default function Hero({ locale }: HeroProps) {
+export default function Hero({ locale, data, stats }: HeroProps) {
   return (
     <section
       className="relative isolate overflow-hidden bg-[#050C18]"
@@ -56,20 +40,16 @@ export default function Hero({ locale }: HeroProps) {
             >
               <span className="size-1.5 rounded-full bg-secondary shadow-[0_0_10px_#C9A96E]" />
 
-              <span>مكتب محاماة واستشارات قانونية معتمد · منذ 1998</span>
+              <span>{data.badge}</span>
             </div>
 
             {/* Heading */}
             <h1 className="max-w-[850px] text-[30px] font-bold tracking-[-0.02em] text-white sm:text-[44px] lg:text-[48px] xl:text-[52px]">
-              <span className="block animate-hero-fade-up" style={{ animationDelay: '220ms' }}>
-                خبرة قانونية تحمي حقوقك
-              </span>
-
               <span
-                className="mt-1 block animate-hero-fade-up bg-[linear-gradient(109deg,#E6C47D_0%,#A27B32_100%)] bg-clip-text text-transparent"
-                style={{ animationDelay: '340ms' }}
+                className="block animate-hero-fade-up bg-[linear-gradient(109deg,#fff_0%,#E6C47D_60%,#A27B32_100%)] bg-clip-text text-transparent"
+                style={{ animationDelay: '220ms' }}
               >
-                وتصون مصالحك الاستراتيجية
+                {data.title}
               </span>
             </h1>
 
@@ -78,8 +58,7 @@ export default function Hero({ locale }: HeroProps) {
               className="mt-4 max-w-[720px] animate-hero-fade-up text-14 leading-6 font-normal text-white/65 sm:mt-6 sm:text-16 sm:leading-8 lg:text-18"
               style={{ animationDelay: '460ms' }}
             >
-              أكثر من ربع قرن من التفوق القانوني والنزاهة المؤسسية. نكرس نخبة من ألمع المستشارين
-              والمحامين لتقديم حلول قانونية استباقية رفيعة المستوى للأفراد والشركات.
+              {data.description}
             </p>
 
             {/* Actions */}
@@ -88,17 +67,17 @@ export default function Hero({ locale }: HeroProps) {
               style={{ animationDelay: '580ms' }}
             >
               <Link
-                href="/"
+                href={data.primaryButton.url}
                 className="flex h-12 items-center justify-center rounded-xl bg-[linear-gradient(109deg,#C9A96E_0%,#9E762B_100%)] px-7 text-14 font-semibold text-white shadow-[0_8px_30px_rgba(201,169,110,0.12)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_35px_rgba(201,169,110,0.22)] hover:brightness-110 sm:w-auto"
               >
-                احجز استشارتك الأولى
+                {data.primaryButton.label}
               </Link>
 
               <Link
-                href="/"
+                href={data.secondaryButton.url}
                 className="flex h-12 items-center justify-center rounded-xl border border-secondary/70 bg-white/[0.01] px-7 text-14 font-medium text-white backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-secondary hover:bg-secondary/10 sm:w-auto"
               >
-                تعرف على مجالاتنا
+                {data.secondaryButton.label}
               </Link>
             </div>
           </div>
@@ -107,9 +86,9 @@ export default function Hero({ locale }: HeroProps) {
         {/* Stats */}
         <div className="border-t border-white/10 py-6 sm:py-8">
           <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-5">
-            {stats.map((stat, index) => (
+            {stats.items.map((stat, index) => (
               <div
-                key={stat.value}
+                key={stat.id ?? `${stat.value}-${index}`}
                 className="group flex min-h-[95px] animate-hero-scale-in flex-col items-center justify-center rounded-2xl border border-white/10 bg-white/[0.015] px-3 py-5 text-center backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-secondary/40 hover:bg-white/[0.035] sm:min-h-[110px]"
                 style={{
                   animationDelay: `${700 + index * 100}ms`,
@@ -123,7 +102,7 @@ export default function Hero({ locale }: HeroProps) {
                 </strong>
 
                 <span className="mt-2 text-12 leading-5 font-medium text-secondary sm:text-14">
-                  {stat.label}
+                  {stat.title}
                 </span>
               </div>
             ))}

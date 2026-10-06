@@ -101,8 +101,7 @@ export default function TestimonialsSlider({ locale, testimonials }: Testimonial
 
                     <p className="mt-1 truncate text-10 text-white/35 sm:text-11">
                       {testimonial.position}
-                      {' · '}
-                      {testimonial.company}
+                      {testimonial.company ? ` · ${testimonial.company}` : ''}
                     </p>
                   </div>
                 </div>

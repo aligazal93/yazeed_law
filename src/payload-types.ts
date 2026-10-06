@@ -520,6 +520,10 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 export interface SiteSetting {
   id: number;
   logo: number | Media;
+  /**
+   * يُستخدم في النسخة الإنجليزية من الموقع، ويظهر اللوجو العربي كبديل حتى يتم رفعه.
+   */
+  logoEnglish?: (number | null) | Media;
   address: string;
   phone: string;
   workingHours: string;
@@ -660,6 +664,7 @@ export interface Testimonial {
  */
 export interface SiteSettingsSelect<T extends boolean = true> {
   logo?: T;
+  logoEnglish?: T;
   address?: T;
   phone?: T;
   workingHours?: T;

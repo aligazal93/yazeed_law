@@ -10,10 +10,13 @@ import {
 } from '@animateicons/react/lucide'
 
 import type { Locale } from '@/lib/getDictionary'
+import { getAssetUrl } from '@/lib/api'
+import type { SiteSetting } from '@/payload-types'
 import Container from './Container'
 
 type FooterProps = {
   locale: Locale
+  settings: SiteSetting
 }
 
 const content = {
@@ -102,8 +105,13 @@ const content = {
   },
 } as const
 
-export default function Footer({ locale }: FooterProps) {
+export default function Footer({ locale, settings }: FooterProps) {
   const data = content[locale]
+  const logoUrl =
+    getAssetUrl(locale === 'en' ? settings.logoEnglish : settings.logo) ??
+    getAssetUrl(settings.logo) ??
+    '/images/logo.png'
+  const phoneHref = `tel:${settings.phone}`
 
   return (
     <>
@@ -141,7 +149,7 @@ export default function Footer({ locale }: FooterProps) {
               {/* CTA Buttons */}
               <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
                 <a
-                  href="tel:+966512345678"
+                  href={phoneHref}
                   className="inline-flex h-11 min-w-[130px] items-center justify-center gap-2 rounded-[10px] bg-gold-gradient px-5 text-12 font-bold text-[#111820] transition-all duration-300 hover:brightness-110"
                 >
                   <PhoneIcon size={15} duration={1} color="currentColor" />
@@ -169,7 +177,7 @@ export default function Footer({ locale }: FooterProps) {
             <div>
               <Link href={`/${locale}`} className="inline-block">
                 <Image
-                  src="/images/logo.png"
+                  src={logoUrl}
                   alt="Yaz Law"
                   width={150}
                   height={58}
@@ -183,17 +191,23 @@ export default function Footer({ locale }: FooterProps) {
 
               {/* Social Links */}
               <div className="mt-5 flex items-center gap-2">
-                <SocialButton href="#" label="Facebook">
-                  <FacebookIcon size={18} duration={1} color="#ffffff" />
-                </SocialButton>
+                {settings.facebook && (
+                  <SocialButton href={toExternalUrl(settings.facebook)} label="Facebook">
+                    <FacebookIcon size={18} duration={1} color="#ffffff" />
+                  </SocialButton>
+                )}
 
-                <SocialButton href="#" label="LinkedIn">
-                  <LinkedinIcon size={18} duration={1} color="#ffffff" />
-                </SocialButton>
+                {settings.linkedin && (
+                  <SocialButton href={toExternalUrl(settings.linkedin)} label="LinkedIn">
+                    <LinkedinIcon size={18} duration={1} color="#ffffff" />
+                  </SocialButton>
+                )}
 
-                <SocialButton href="#" label="X">
-                  <TwitterIcon size={18} duration={1} color="#ffffff" />
-                </SocialButton>
+                {settings.twitter && (
+                  <SocialButton href={toExternalUrl(settings.twitter)} label="X">
+                    <TwitterIcon size={18} duration={1} color="#ffffff" />
+                  </SocialButton>
+                )}
               </div>
             </div>
 
@@ -242,9 +256,17 @@ export default function Footer({ locale }: FooterProps) {
               </p>
 
               <div className="mt-4 rounded-lg border border-white/[0.06] bg-[#111820]/60 px-4 py-3">
-                <p className="text-12 font-medium text-secondary">{data.licenseNumber}</p>
+                <p className="text-12 font-medium text-secondary">
+                  {settings.professionalLicenseNumber
+                    ? `${locale === 'ar' ? 'ترخيص مهني رقم' : 'Professional License No.'} ${settings.professionalLicenseNumber}`
+                    : data.licenseNumber}
+                </p>
 
-                <p className="mt-1.5 text-12 text-white/30">{data.licenseSub}</p>
+                <p className="mt-1.5 text-12 text-white/30">
+                  {settings.commercialRegistrationNumber
+                    ? `${locale === 'ar' ? 'سجل تجاري واستشاري رقم' : 'Commercial & Advisory Registration No.'} ${settings.commercialRegistrationNumber}`
+                    : data.licenseSub}
+                </p>
               </div>
             </div>
           </div>
@@ -253,7 +275,7 @@ export default function Footer({ locale }: FooterProps) {
               Footer Bottom
           ========================= */}
           <div className="flex flex-col gap-3 border-t border-white/[0.07] py-4 text-9 text-white/30 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-14 font-medium text-white">{data.copyright}</p>
+            <p className="text-14 font-medium text-white">{settings.copyright}</p>
 
             <div className="flex flex-wrap text-white text-14 items-center gap-3">
               <Link
@@ -277,7 +299,7 @@ export default function Footer({ locale }: FooterProps) {
       </footer>
 
       {/* Fixed Contact Buttons */}
-      <FloatingContactButtons locale={locale} />
+      <FloatingContactButtons locale={locale} settings={settings} />
     </>
   )
 }
@@ -304,12 +326,12 @@ function SocialButton({
   )
 }
 
-function FloatingContactButtons({ locale }: { locale: Locale }) {
+function FloatingContactButtons({ locale, settings }: { locale: Locale; settings: SiteSetting }) {
   return (
     <div className="fixed bottom-5 left-4 z-[100] flex flex-col gap-2.5 sm:bottom-8 sm:left-6">
       {/* WhatsApp */}
       <a
-        href="https://wa.me/966512345678"
+        href={`https://wa.me/${(settings.whatsapp || settings.phone).replace(/\D/g, '')}`}
         target="_blank"
         rel="noopener noreferrer"
         aria-label={locale === 'ar' ? 'تواصل معنا عبر واتساب' : 'Contact us via WhatsApp'}
@@ -324,7 +346,7 @@ function FloatingContactButtons({ locale }: { locale: Locale }) {
 
       {/* Phone */}
       <a
-        href="tel:+966512345678"
+        href={`tel:${settings.phone}`}
         aria-label={locale === 'ar' ? 'اتصل بنا' : 'Call us'}
         className="group relative flex size-11 items-center justify-center rounded-full bg-[#2F6FE4] text-white shadow-[0_10px_30px_rgba(47,111,228,0.28)] transition-all duration-300 hover:-translate-y-1 hover:scale-105 sm:size-12"
       >
@@ -338,18 +360,14 @@ function FloatingContactButtons({ locale }: { locale: Locale }) {
   )
 }
 
+function toExternalUrl(url: string) {
+  return /^https?:\/\//i.test(url) ? url : `https://${url}`
+}
+
 function WhatsAppIcon() {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       <path d="M12.04 2C6.52 2 2.05 6.45 2.05 11.94c0 1.75.46 3.46 1.33 4.96L2 22l5.23-1.37a10.08 10.08 0 0 0 4.8 1.22h.01c5.51 0 9.99-4.45 9.99-9.94C22.03 6.45 17.55 2 12.04 2Zm0 18.17h-.01a8.36 8.36 0 0 1-4.25-1.16l-.3-.18-3.1.81.83-3.02-.2-.31a8.2 8.2 0 0 1-1.28-4.37c0-4.56 3.73-8.27 8.32-8.27 4.58 0 8.31 3.71 8.31 8.27 0 4.56-3.73 8.23-8.32 8.23Zm4.56-6.19c-.25-.12-1.48-.73-1.71-.81-.23-.08-.4-.12-.57.12-.17.25-.65.81-.8.98-.15.16-.3.18-.55.06-.25-.12-1.06-.39-2.02-1.24a7.48 7.48 0 0 1-1.4-1.73c-.15-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.14.17-.25.25-.41.08-.16.04-.31-.02-.43-.06-.12-.57-1.37-.78-1.88-.21-.49-.42-.42-.57-.43h-.49c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.09s.9 2.42 1.02 2.58c.13.16 1.76 2.68 4.27 3.76.6.26 1.06.41 1.43.52.6.19 1.14.16 1.57.1.48-.07 1.48-.6 1.69-1.18.21-.58.21-1.08.15-1.18-.06-.1-.23-.16-.48-.29Z" />
-    </svg>
-  )
-}
-
-function WhatsAppMiniIcon() {
-  return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M12.04 2C6.52 2 2.05 6.45 2.05 11.94c0 1.75.46 3.46 1.33 4.96L2 22l5.23-1.37a10.08 10.08 0 0 0 4.8 1.22h.01c5.51 0 9.99-4.45 9.99-9.94C22.03 6.45 17.55 2 12.04 2Z" />
     </svg>
   )
 }

@@ -21,8 +21,19 @@ export const SiteSettings: GlobalConfig = {
       name: 'logo',
       type: 'upload',
       relationTo: 'media',
-      label: 'اللوجو',
+      label: 'اللوجو العربي',
       required: true,
+    },
+
+    {
+      name: 'logoEnglish',
+      type: 'upload',
+      relationTo: 'media',
+      label: 'اللوجو الإنجليزي',
+      admin: {
+        description:
+          'يُستخدم في النسخة الإنجليزية من الموقع، ويظهر اللوجو العربي كبديل حتى يتم رفعه.',
+      },
     },
 
     {
