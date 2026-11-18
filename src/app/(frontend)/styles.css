@@ -1,13 +1,13 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
   --font-primary: var(--font-ibm-plex);
 
-  --color-primary: #0D131B;
-  --color-secondary: #C9A96E;
+  --color-primary: #0d131b;
+  --color-secondary: #c9a96e;
   --color-black: #000;
-  --color-darkGray: #94A3B8;
-  --color-grey: #CBD5E1;
+  --color-darkGray: #94a3b8;
+  --color-grey: #cbd5e1;
   --text-10: 10px;
   --text-12: 12px;
   --text-14: 14px;
@@ -21,7 +21,7 @@
 }
 
 @utility bg-gold-gradient {
-  background: linear-gradient(109deg, #C9A96E 0%, #9E762B 100%);
+  background: linear-gradient(109deg, #c9a96e 0%, #9e762b 100%);
 }
 html {
   scroll-behavior: smooth;
@@ -30,16 +30,31 @@ html {
 body {
   font-family: var(--font-ibm-plex), sans-serif;
 }
-@keyframes hero-background {
-  0% {
-    transform: scale(1.08);
-  }
 
-  100% {
-    transform: scale(1);
-  }
+:focus-visible {
+  outline: 2px solid #c9a96e;
+  outline-offset: 3px;
 }
 
+::selection {
+  background: #c9a96e;
+  color: #0d131b;
+}
+
+.performance-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(201, 169, 110, 0.45) transparent;
+  overscroll-behavior-inline: contain;
+}
+
+.performance-scroll::-webkit-scrollbar {
+  height: 5px;
+}
+
+.performance-scroll::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(201, 169, 110, 0.45);
+}
 @keyframes hero-fade-up {
   0% {
     opacity: 0;
@@ -76,10 +91,6 @@ body {
   }
 }
 
-@utility animate-hero-background {
-  animation: hero-background 2.5s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
 @utility animate-hero-fade-up {
   opacity: 0;
   animation: hero-fade-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
@@ -96,7 +107,17 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .animate-hero-background,
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+
   .animate-hero-fade-up,
   .animate-hero-fade-down,
   .animate-hero-scale-in {
@@ -105,7 +126,6 @@ body {
     transform: none !important;
   }
 }
-
 
 .testimonials-slider .swiper-pagination {
   bottom: 0 !important;

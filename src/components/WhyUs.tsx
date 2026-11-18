@@ -3,8 +3,10 @@ import {
   ClockIcon,
   QuoteIcon,
   ShieldCheckIcon,
+  UserIcon,
   UserRoundCogIcon,
-} from '@animateicons/react/lucide'
+  UsersRoundIcon,
+} from '@/components/ui/Icons'
 
 import type { Locale } from '@/lib/getDictionary'
 import type { WhyUs as WhyUsData } from '@/payload-types'
@@ -44,7 +46,6 @@ export default function WhyUs({ locale, data }: WhyUsProps) {
     description: item.content,
     icon: iconMap[item.icon],
   }))
-  const initials = getInitials(data.managerName)
 
   return (
     <section
@@ -130,13 +131,13 @@ export default function WhyUs({ locale, data }: WhyUsProps) {
             {/* Author */}
             <div className="relative z-10 mt-8 flex items-center justify-center gap-4">
               <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(135deg,#E2C178_0%,#A27B32_100%)] text-13 font-bold text-[#10151E]">
-                {initials}
+                <UserIcon size={22} duration={1} color="currentColor" />
               </div>
 
               <div>
-                <h4 className="text-13 font-bold text-white sm:text-14">{data.managerName}</h4>
+                <h4 className="text-14 font-bold text-white sm:text-14">{data.managerName}</h4>
 
-                <p className="mt-1 text-10 text-white/40 sm:text-11">{data.managerPosition}</p>
+                <p className="mt-1 text-10 text-white/40 sm:text-12">{data.managerPosition}</p>
               </div>
             </div>
           </article>
@@ -144,14 +145,4 @@ export default function WhyUs({ locale, data }: WhyUsProps) {
       </Container>
     </section>
   )
-}
-
-function getInitials(name: string) {
-  return name
-    .replace(/[^\p{L}\p{N}\s]/gu, '')
-    .trim()
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((word) => word.charAt(0))
-    .join('')
 }

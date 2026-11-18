@@ -1,12 +1,17 @@
 import 'server-only'
 
+import config from '@payload-config'
+import { getPayload } from 'payload'
 import { cache } from 'react'
 
 import type {
+  AboutPage,
   AboutUs,
   AccreditationsTrust,
   Article,
+  ArticlesPage,
   Document,
+  Faq,
   Hero,
   HowWorking,
   Media,
@@ -14,24 +19,11 @@ import type {
   Service,
   SiteSetting,
   Stat,
+  TeamPage,
   Testimonial,
   WhyUs,
 } from '@/payload-types'
 import type { Locale } from './getDictionary'
-
-const DEFAULT_API_BASE_URL = 'https://yazeed-law.vercel.app/api'
-
-export const API_BASE_URL = (process.env.API_BASE_URL || DEFAULT_API_BASE_URL).replace(/\/+$/, '')
-
-type PayloadCollection<T> = {
-  docs: T[]
-  totalDocs: number
-  limit: number
-  page: number
-  totalPages: number
-  hasNextPage: boolean
-  hasPrevPage: boolean
-}
 
 type PayloadAsset = Media | Document | number | null | undefined
 
@@ -48,35 +40,138 @@ export type HomePageData = {
   articles: Article[]
 }
 
-async function apiFetch<T>(path: string, locale: Locale): Promise<T> {
-  const url = new URL(`${API_BASE_URL}/${path.replace(/^\/+/, '')}`)
-  url.searchParams.set('locale', locale)
-  url.searchParams.set('depth', '1')
+export type ServicePageData = {
+  service: Service | null
+  services: Service[]
+}
 
-  const response = await fetch(url, {
-    headers: { Accept: 'application/json' },
-    next: { revalidate: 60 },
+export type ArticlesPageData = {
+  settings: ArticlesPage
+  articles: Article[]
+}
+
+export type ArticleDetailsData = {
+  settings: ArticlesPage
+  article: Article | null
+  recentArticles: Article[]
+}
+
+export const getSiteSettings = cache(async (locale: Locale): Promise<SiteSetting> => {
+  const payload = await getPayload({ config })
+
+  return payload.findGlobal({
+    slug: 'site-settings',
+    locale,
+    depth: 1,
   })
+})
 
-  if (!response.ok) {
-    throw new Error(`Payload request failed (${response.status}) for ${url.pathname}`)
+export const getAboutPage = cache(async (locale: Locale): Promise<AboutPage> => {
+  const payload = await getPayload({ config })
+
+  return payload.findGlobal({
+    slug: 'about-page',
+    locale,
+    depth: 1,
+  })
+})
+
+export const getFAQ = cache(async (locale: Locale): Promise<Faq> => {
+  const payload = await getPayload({ config })
+
+  return payload.findGlobal({
+    slug: 'faq',
+    locale,
+    depth: 0,
+  })
+})
+
+export const getTeamPage = cache(async (locale: Locale): Promise<TeamPage> => {
+  const payload = await getPayload({ config })
+
+  return payload.findGlobal({
+    slug: 'team-page',
+    locale,
+    depth: 1,
+  })
+})
+
+export const getServicePageData = cache(
+  async (locale: Locale, slug: string): Promise<ServicePageData> => {
+    const payload = await getPayload({ config })
+
+    const [serviceResult, servicesResult] = await Promise.all([
+      payload.find({
+        collection: 'services',
+        locale,
+        depth: 1,
+        limit: 1,
+        where: {
+          slug: {
+            equals: slug,
+          },
+        },
+      }),
+      payload.find({
+        collection: 'services',
+        locale,
+        depth: 0,
+        limit: 100,
+        sort: 'createdAt',
+      }),
+    ])
+
+    return {
+      service: serviceResult.docs[0] ?? null,
+      services: servicesResult.docs,
+    }
+  },
+)
+
+export const getArticlesPageData = cache(async (locale: Locale): Promise<ArticlesPageData> => {
+  const payload = await getPayload({ config })
+
+  const [settings, articles] = await Promise.all([
+    payload.findGlobal({ slug: 'articles-page', locale, depth: 0 }),
+    payload.find({ collection: 'articles', locale, depth: 1, limit: 100, sort: '-date' }),
+  ])
+
+  return {
+    settings,
+    articles: articles.docs,
   }
+})
 
-  return (await response.json()) as T
-}
+export const getArticleDetailsData = cache(
+  async (locale: Locale, id: number): Promise<ArticleDetailsData> => {
+    const payload = await getPayload({ config })
 
-async function getCollection<T>(slug: string, locale: Locale, limit = 100, sort?: string) {
-  const path = new URLSearchParams({ limit: String(limit) })
-  if (sort) path.set('sort', sort)
+    const [settings, articleResult, recentResult] = await Promise.all([
+      payload.findGlobal({ slug: 'articles-page', locale, depth: 0 }),
+      payload.find({
+        collection: 'articles',
+        locale,
+        depth: 1,
+        limit: 1,
+        where: {
+          id: {
+            equals: id,
+          },
+        },
+      }),
+      payload.find({ collection: 'articles', locale, depth: 1, limit: 5, sort: '-date' }),
+    ])
 
-  return apiFetch<PayloadCollection<T>>(`${slug}?${path}`, locale)
-}
-
-export const getSiteSettings = cache((locale: Locale) =>
-  apiFetch<SiteSetting>('globals/site-settings', locale),
+    return {
+      settings,
+      article: articleResult.docs[0] ?? null,
+      recentArticles: recentResult.docs.filter((article) => article.id !== id).slice(0, 4),
+    }
+  },
 )
 
 export const getHomePageData = cache(async (locale: Locale): Promise<HomePageData> => {
+  const payload = await getPayload({ config })
   const [
     hero,
     stats,
@@ -89,16 +184,16 @@ export const getHomePageData = cache(async (locale: Locale): Promise<HomePageDat
     testimonials,
     articles,
   ] = await Promise.all([
-    apiFetch<Hero>('globals/hero', locale),
-    apiFetch<Stat>('globals/stats', locale),
-    apiFetch<AboutUs>('globals/about-us', locale),
-    getCollection<Service>('services', locale),
-    apiFetch<HowWorking>('globals/how-working', locale),
-    apiFetch<WhyUs>('globals/why-us', locale),
-    getCollection<AccreditationsTrust>('accreditations-trust', locale),
-    getCollection<Partner>('partners', locale),
-    apiFetch<Testimonial>('globals/testimonials', locale),
-    getCollection<Article>('articles', locale, 3, '-date'),
+    payload.findGlobal({ slug: 'hero', locale, depth: 1 }),
+    payload.findGlobal({ slug: 'stats', locale, depth: 1 }),
+    payload.findGlobal({ slug: 'about-us', locale, depth: 1 }),
+    payload.find({ collection: 'services', locale, depth: 1, limit: 100 }),
+    payload.findGlobal({ slug: 'how-working', locale, depth: 1 }),
+    payload.findGlobal({ slug: 'why-us', locale, depth: 1 }),
+    payload.find({ collection: 'accreditations-trust', locale, depth: 1, limit: 100 }),
+    payload.find({ collection: 'partners', locale, depth: 1, limit: 100 }),
+    payload.findGlobal({ slug: 'testimonials', locale, depth: 1 }),
+    payload.find({ collection: 'articles', locale, depth: 1, limit: 3, sort: '-date' }),
   ])
 
   return {
@@ -120,7 +215,7 @@ export function getAssetUrl(asset: PayloadAsset): string | null {
 
   if (/^https?:\/\//i.test(asset.url)) return asset.url
 
-  return `${new URL(API_BASE_URL).origin}/${asset.url.replace(/^\/+/, '')}`
+  return asset.url.startsWith('/') ? asset.url : `/${asset.url}`
 }
 
 export function lexicalToPlainText(content: Article['content']): string {

@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-import { MoveLeftIcon, MoveRightIcon } from '@animateicons/react/lucide'
+import { MoveLeftIcon, MoveRightIcon } from '@/components/ui/Icons'
 
 import type { Locale } from '@/lib/getDictionary'
 import { getAssetUrl, lexicalToPlainText } from '@/lib/api'

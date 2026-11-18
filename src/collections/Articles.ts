@@ -1,4 +1,5 @@
 import { ADMIN_GROUPS } from '@/constants/adminGroups'
+import { admins, adminsOrContentEditors } from '@/access/permissions'
 import type { CollectionConfig } from 'payload'
 
 export const Articles: CollectionConfig = {
@@ -18,9 +19,9 @@ export const Articles: CollectionConfig = {
 
   access: {
     read: () => true,
-    create: ({ req }) => Boolean(req.user),
-    update: ({ req }) => Boolean(req.user),
-    delete: ({ req }) => Boolean(req.user),
+    create: adminsOrContentEditors,
+    update: adminsOrContentEditors,
+    delete: admins,
   },
 
   hooks: {

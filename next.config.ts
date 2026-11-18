@@ -8,11 +8,18 @@ const dirname = path.dirname(__filename)
 
 const nextConfig: NextConfig = {
   agentRules: false,
+  poweredByHeader: false,
+  reactStrictMode: true,
 
   images: {
+    formats: ['image/webp'],
+    minimumCacheTTL: 2678400,
     localPatterns: [
       {
         pathname: '/images/**',
+      },
+      {
+        pathname: '/api/**',
       },
     ],
 

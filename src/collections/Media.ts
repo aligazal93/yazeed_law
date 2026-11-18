@@ -1,3 +1,4 @@
+import { admins, adminsOrContentEditors } from '@/access/permissions'
 import type { CollectionConfig } from 'payload'
 
 export const Media: CollectionConfig = {
@@ -14,6 +15,9 @@ export const Media: CollectionConfig = {
 
   access: {
     read: () => true,
+    create: adminsOrContentEditors,
+    update: adminsOrContentEditors,
+    delete: admins,
   },
 
   fields: [

@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { MoveLeftIcon, MoveRightIcon } from '@animateicons/react/lucide'
+import { MoveLeftIcon, MoveRightIcon } from '@/components/ui/Icons'
 
 import { getAssetUrl } from '@/lib/api'
 import type { Locale } from '@/lib/getDictionary'
@@ -86,9 +86,12 @@ export default function Services({ locale, services }: ServicesProps) {
                 </div>
 
                 <div className="relative z-10 flex flex-1 flex-col">
-                  <h3 className="text-17 leading-7 font-bold text-white transition-colors duration-300 group-hover:text-secondary sm:text-18">
+                  <Link
+                    href={`/${locale}/services/${service.slug}`}
+                    className="text-17 leading-7 font-bold text-white transition-colors duration-300 group-hover:text-secondary sm:text-18"
+                  >
                     {service.title}
-                  </h3>
+                  </Link>
                   <p className="mt-2 flex-1 text-12 leading-6 font-normal text-white/65 sm:text-13">
                     {service.description}
                   </p>

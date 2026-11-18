@@ -1,16 +1,10 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
-import {
-  FacebookIcon,
-  LinkedinIcon,
-  MailIcon,
-  PhoneIcon,
-  TwitterIcon,
-} from '@animateicons/react/lucide'
+import { FacebookIcon, LinkedinIcon, MailIcon, PhoneIcon, TwitterIcon } from '@/components/ui/Icons'
 
 import type { Locale } from '@/lib/getDictionary'
-import { getAssetUrl } from '@/lib/api'
+import { getAssetUrl, getHomePageData } from '@/lib/api'
 import type { SiteSetting } from '@/payload-types'
 import Container from './Container'
 
@@ -26,7 +20,7 @@ const content = {
     ctaDescription:
       'اترك رقمك ومستشارك معك خلال 24 ساعة، لدراسة أولية وتقييم البدائل القانونية بالكامل، ودون أي التزام.',
     callNow: 'اتصل بنا الآن',
-    contactNow: 'تواصل معنا الآن',
+    contactNow: 'ارسل لنا واتساب',
 
     description:
       'نحن فريق متكامل يجمع بين الكفاءة القانونية والخبرة العملية، لحماية مصالح عملائنا وتحقيق أفضل النتائج الممكنة.',
@@ -34,19 +28,11 @@ const content = {
     quickLinksTitle: 'روابط سريعة',
     quickLinks: [
       { label: 'الرئيسية', href: '' },
-      { label: 'من نحن', href: '/about' },
-      { label: 'مجالات الاختصاص', href: '/practice-areas' },
+      { label: 'من نحن', href: '/about-us' },
+      { label: 'فريق العمل', href: '/team' },
+      { label: 'مجالات الممارسة', href: '/services' },
       { label: 'تواصل معنا', href: '/contact' },
       { label: 'المقالات', href: '/articles' },
-    ],
-
-    practicesTitle: 'الممارسات القانونية',
-    practices: [
-      { label: 'تأسيس وحوكمة الشركات', href: '/services/corporate-law' },
-      { label: 'التحكيم الدولي', href: '/services/arbitration' },
-      { label: 'النزاعات التجارية والإنشاء', href: '/services/commercial-disputes' },
-      { label: 'حماية الملكية الفكرية', href: '/services/intellectual-property' },
-      { label: 'الدفاع في القضايا المالية', href: '/services/criminal-law' },
     ],
 
     licenseTitle: 'الترخيص والاعتماد',
@@ -68,7 +54,7 @@ const content = {
     ctaDescription:
       'Leave your details and our legal team will review your case within 24 hours, with no obligation.',
     callNow: 'Call Us Now',
-    contactNow: 'Contact Us',
+    contactNow: 'Send Us WhatsApp Message',
 
     description:
       'An integrated legal team combining professional expertise and practical experience to protect our clients’ interests and achieve the best possible outcomes.',
@@ -77,6 +63,7 @@ const content = {
     quickLinks: [
       { label: 'Home', href: '' },
       { label: 'About Us', href: '/about' },
+      { label: 'Our Team', href: '/team' },
       { label: 'Practice Areas', href: '/practice-areas' },
       { label: 'Contact Us', href: '/contact' },
       { label: 'Articles', href: '/articles' },
@@ -105,13 +92,15 @@ const content = {
   },
 } as const
 
-export default function Footer({ locale, settings }: FooterProps) {
+export default async function Footer({ locale, settings }: FooterProps) {
   const data = content[locale]
   const logoUrl =
     getAssetUrl(locale === 'en' ? settings.logoEnglish : settings.logo) ??
     getAssetUrl(settings.logo) ??
     '/images/logo.png'
   const phoneHref = `tel:${settings.phone}`
+
+  const servicesData = await getHomePageData(locale)
 
   return (
     <>
@@ -158,10 +147,10 @@ export default function Footer({ locale, settings }: FooterProps) {
                 </a>
 
                 <Link
-                  href={`/${locale}/contact`}
+                  href={`https://wa.me/${(settings.whatsapp || settings.phone).replace(/\D/g, '')}`}
                   className="inline-flex h-11 min-w-[145px] items-center justify-center gap-2 rounded-[10px] border border-secondary/40 bg-transparent px-5 text-12 font-medium text-white transition-all duration-300 hover:bg-secondary/10"
                 >
-                  <MailIcon size={15} duration={1} color="currentColor" />
+                  <WhatsAppIcon />
 
                   {data.contactNow}
                 </Link>
@@ -190,24 +179,27 @@ export default function Footer({ locale, settings }: FooterProps) {
               </p>
 
               {/* Social Links */}
-              <div className="mt-5 flex items-center gap-2">
-                {settings.facebook && (
-                  <SocialButton href={toExternalUrl(settings.facebook)} label="Facebook">
-                    <FacebookIcon size={18} duration={1} color="#ffffff" />
-                  </SocialButton>
-                )}
+              <div className="mt-5 flex items-center gap-3">
+                <SocialButton
+                  href={settings.facebook ? toExternalUrl(settings.facebook) : undefined}
+                  label="Facebook"
+                >
+                  <FacebookIcon size={18} />
+                </SocialButton>
 
-                {settings.linkedin && (
-                  <SocialButton href={toExternalUrl(settings.linkedin)} label="LinkedIn">
-                    <LinkedinIcon size={18} duration={1} color="#ffffff" />
-                  </SocialButton>
-                )}
+                <SocialButton
+                  href={settings.linkedin ? toExternalUrl(settings.linkedin) : undefined}
+                  label="LinkedIn"
+                >
+                  <LinkedinIcon size={18} />
+                </SocialButton>
 
-                {settings.twitter && (
-                  <SocialButton href={toExternalUrl(settings.twitter)} label="X">
-                    <TwitterIcon size={18} duration={1} color="#ffffff" />
-                  </SocialButton>
-                )}
+                <SocialButton
+                  href={settings.twitter ? toExternalUrl(settings.twitter) : undefined}
+                  label="X"
+                >
+                  <TwitterIcon size={18} />
+                </SocialButton>
               </div>
             </div>
 
@@ -231,16 +223,18 @@ export default function Footer({ locale, settings }: FooterProps) {
 
             {/* Practices */}
             <div>
-              <h3 className="text-12 font-bold text-white sm:text-13">{data.practicesTitle}</h3>
+              <h3 className="text-12 font-bold text-white sm:text-13">
+                {locale === 'ar' ? 'خدماتنا' : 'Our Services'}
+              </h3>
 
               <ul className="mt-4 space-y-2.5">
-                {data.practices.map((link) => (
-                  <li key={link.label}>
+                {servicesData.services?.map((service, index) => (
+                  <li key={service.id ?? index}>
                     <Link
-                      href={`/${locale}${link.href}`}
-                      className="text-11 text-white/40 transition-colors duration-300 hover:text-secondary sm:text-12"
+                      href={`/${locale}/services/${service.slug}`}
+                      className="inline-flex text-11 leading-6 text-white/40 transition-colors duration-300 hover:text-secondary sm:text-12"
                     >
-                      {link.label}
+                      {service.title}
                     </Link>
                   </li>
                 ))}
@@ -309,17 +303,33 @@ function SocialButton({
   label,
   children,
 }: {
-  href: string
+  href?: string
   label: string
   children: React.ReactNode
 }) {
+  const className =
+    'group flex size-10 shrink-0 items-center justify-center rounded-xl border border-white/15 bg-white/[0.06] text-white transition-all duration-300'
+
+  if (!href) {
+    return (
+      <span
+        aria-label={`${label} is not configured`}
+        aria-disabled="true"
+        title={`${label} is not configured`}
+        className={`${className} cursor-not-allowed opacity-55`}
+      >
+        {children}
+      </span>
+    )
+  }
+
   return (
     <a
       href={href}
       target={href.startsWith('http') ? '_blank' : undefined}
       rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
       aria-label={label}
-      className="flex size-8 items-center justify-center rounded-lg p-5 border border-white/[0.07] bg-white/[0.015] text-10 font-semibold text-white/50 transition-all duration-300 hover:border-secondary/40 hover:text-secondary"
+      className={`${className} hover:-translate-y-1 hover:border-secondary/50 hover:bg-secondary/10 hover:text-secondary`}
     >
       {children}
     </a>

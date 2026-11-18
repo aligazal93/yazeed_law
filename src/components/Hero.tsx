@@ -4,6 +4,7 @@ import Link from 'next/link'
 import type { Locale } from '@/lib/getDictionary'
 import type { Hero as HeroData, Stat } from '@/payload-types'
 import Container from './layouts/Container'
+import ConsultationModal from './ConsultationModal'
 
 type HeroProps = {
   locale: Locale
@@ -18,14 +19,18 @@ export default function Hero({ locale, data, stats }: HeroProps) {
       dir={locale === 'ar' ? 'rtl' : 'ltr'}
     >
       {/* Background */}
-      <Image
-        src="/images/intro.png"
-        alt=""
-        fill
-        priority
-        sizes="100vw"
-        className="-z-20 object-cover object-center animate-hero-background"
-      />
+      <picture className="absolute inset-0 -z-20">
+        <source media="(min-width: 768px)" srcSet="/images/intro-desktop.webp" />
+        <Image
+          src="/images/intro-mobile.webp"
+          alt=""
+          fill
+          unoptimized
+          fetchPriority="high"
+          sizes="100vw"
+          className="object-cover object-center"
+        />
+      </picture>
 
       {/* Overlay */}
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(67.7%_69.91%_at_50%_25%,rgba(30,32,35,0.82)_0%,rgba(5,12,24,0.92)_75%,#050C18_100%)]" />
@@ -63,18 +68,14 @@ export default function Hero({ locale, data, stats }: HeroProps) {
 
             {/* Actions */}
             <div
-              className="mt-7 w-full flex  animate-hero-fade-up items-center justify-center gap-2 sm:mt-8 sm:w-auto sm:flex-row"
+              className="mt-7  w-full flex  animate-hero-fade-up items-center justify-center gap-2 sm:mt-8 sm:w-auto sm:flex-row"
               style={{ animationDelay: '580ms' }}
             >
-              <Link
-                href={data.primaryButton.url}
-                className="flex h-12 items-center justify-center rounded-xl bg-[linear-gradient(109deg,#C9A96E_0%,#9E762B_100%)] px-7 text-14 font-semibold text-white shadow-[0_8px_30px_rgba(201,169,110,0.12)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_35px_rgba(201,169,110,0.22)] hover:brightness-110 sm:w-auto"
-              >
-                {data.primaryButton.label}
-              </Link>
+              <ConsultationModal locale={locale} label={data.primaryButton.label} />
 
               <Link
                 href={data.secondaryButton.url}
+                prefetch={false}
                 className="flex h-12 items-center justify-center rounded-xl border border-secondary/70 bg-white/[0.01] px-7 text-14 font-medium text-white backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-secondary hover:bg-secondary/10 sm:w-auto"
               >
                 {data.secondaryButton.label}

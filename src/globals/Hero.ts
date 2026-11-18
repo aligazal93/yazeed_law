@@ -1,4 +1,5 @@
 import { ADMIN_GROUPS } from '@/constants/adminGroups'
+import { adminsOrContentEditors } from '@/access/permissions'
 import type { GlobalConfig } from 'payload'
 
 export const Hero: GlobalConfig = {
@@ -12,7 +13,7 @@ export const Hero: GlobalConfig = {
 
   access: {
     read: () => true,
-    update: ({ req }) => Boolean(req.user),
+    update: adminsOrContentEditors,
   },
 
   fields: [

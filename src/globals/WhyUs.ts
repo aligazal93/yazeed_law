@@ -1,4 +1,5 @@
 import { ADMIN_GROUPS } from '@/constants/adminGroups'
+import { adminsOrContentEditors } from '@/access/permissions'
 import type { GlobalConfig } from 'payload'
 
 export const WhyUs: GlobalConfig = {
@@ -11,7 +12,7 @@ export const WhyUs: GlobalConfig = {
 
   access: {
     read: () => true,
-    update: ({ req }) => Boolean(req.user),
+    update: adminsOrContentEditors,
   },
 
   fields: [

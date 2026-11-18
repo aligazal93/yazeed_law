@@ -1,4 +1,5 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
+import { resendAdapter } from '@payloadcms/email-resend'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import { ar } from '@payloadcms/translations/languages/ar'
@@ -22,11 +23,26 @@ import { Partners } from './collections/Partners'
 import { AccreditationsTrust } from './collections/AccreditationsTrust'
 import { Articles } from './collections/Articles'
 import { Testimonials } from './globals/Testimonials'
+import { AboutPage } from './globals/AboutPage'
+import { ConsultationRequests } from './collections/ConsultationRequests'
+import { FAQ } from './globals/FAQ'
+import { ArticlesPage } from './globals/ArticlesPage'
+import { TeamPage } from './globals/TeamPage'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+const resendAPIKey = process.env.RESEND_API_KEY
+const resendFromEmail = process.env.RESEND_FROM_EMAIL
 
 export default buildConfig({
+  email: resendAPIKey && resendFromEmail
+    ? resendAdapter({
+        apiKey: resendAPIKey,
+        defaultFromAddress: resendFromEmail,
+        defaultFromName: 'YAZ Law',
+      })
+    : undefined,
+
   admin: {
     user: Users.slug,
 
@@ -84,9 +100,30 @@ export default buildConfig({
     ],
   },
 
-  collections: [Users, Media, Documents, Services, Partners, AccreditationsTrust, Articles],
+  collections: [
+    Users,
+    Media,
+    Documents,
+    Services,
+    Partners,
+    AccreditationsTrust,
+    Articles,
+    ConsultationRequests,
+  ],
 
-  globals: [SiteSettings, Hero, Stats, AboutUs, HowWorking, WhyUs, Testimonials],
+  globals: [
+    SiteSettings,
+    Hero,
+    Stats,
+    AboutUs,
+    HowWorking,
+    WhyUs,
+    Testimonials,
+    AboutPage,
+    FAQ,
+    ArticlesPage,
+    TeamPage,
+  ],
 
   editor: lexicalEditor(),
 
@@ -111,6 +148,9 @@ export default buildConfig({
       collections: {
         media: {
           prefix: 'media',
+        },
+        'consultation-requests': {
+          prefix: 'consultation-attachments',
         },
       },
 

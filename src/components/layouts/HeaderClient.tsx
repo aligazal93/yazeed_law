@@ -6,8 +6,15 @@ import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 
 import Container from './Container'
-import { Globe02Icon, Menu01 } from '@animateicons/react/huge'
-import { ClockIcon, MailIcon, MapPinCheckIcon, PhoneIcon } from '@animateicons/react/lucide'
+import {
+  ClockIcon,
+  Globe02Icon,
+  MailIcon,
+  MapPinCheckIcon,
+  Menu01,
+  PhoneIcon,
+} from '@/components/ui/Icons'
+import ConsultationModal from '../ConsultationModal'
 
 type Locale = 'ar' | 'en'
 
@@ -15,6 +22,7 @@ type HeaderLabels = {
   home: string
   about: string
   practiceAreas: string
+  team: string
   articles: string
   contact: string
   consultation: string
@@ -46,11 +54,15 @@ export default function HeaderClient({ locale, labels, settings }: HeaderClientP
     },
     {
       label: labels.about,
-      href: `/${locale}/about`,
+      href: `/${locale}/about-us`,
     },
     {
       label: labels.practiceAreas,
-      href: `/${locale}/practice-areas`,
+      href: `/${locale}/services`,
+    },
+    {
+      label: labels.team,
+      href: `/${locale}/team`,
     },
     {
       label: labels.articles,
@@ -88,13 +100,13 @@ export default function HeaderClient({ locale, labels, settings }: HeaderClientP
         <div className="hidden h-[78px] items-center lg:flex">
           {/* Logo */}
           <div className="flex w-[220px] items-center">
-            <Link href={`/${locale}`}>
+            <Link href={`/${locale}`} prefetch={false}>
               <Image
                 src={settings.logoUrl}
                 alt="Yaz Law"
                 width={155}
                 height={55}
-                priority
+                sizes="155px"
                 className="h-auto w-[140px] object-contain xl:w-[155px]"
               />
             </Link>
@@ -110,6 +122,7 @@ export default function HeaderClient({ locale, labels, settings }: HeaderClientP
                   <li key={link.href}>
                     <Link
                       href={link.href}
+                      prefetch={false}
                       className={`relative whitespace-nowrap text-14 font-bold transition-colors duration-300 ${
                         active ? 'text-secondary' : 'text-grey hover:text-secondary'
                       }`}
@@ -130,29 +143,25 @@ export default function HeaderClient({ locale, labels, settings }: HeaderClientP
           <div className="flex items-center justify-end gap-5">
             <Link
               href={languageHref}
+              prefetch={false}
               className="flex items-center gap-2 text-14 font-medium text-white transition hover:text-secondary"
             >
               <Globe02Icon size={22} duration={1} color="#ffffff" className="hover:text-primary" />
             </Link>
 
-            <Link
-              href={`/${locale}/contact`}
-              className="flex h-10  items-center justify-center rounded-xl bg-gold-gradient px-10 text-14 font-bold text-primary transition-all duration-300 hover:brightness-150"
-            >
-              {labels.consultation}
-            </Link>
+            <ConsultationModal locale={locale} label={labels.consultation} />
           </div>
         </div>
 
         {/* Mobile / Tablet */}
         <div className="flex h-[68px] items-center justify-between lg:hidden">
-          <Link href={`/${locale}`}>
+          <Link href={`/${locale}`} prefetch={false}>
             <Image
               src={settings.logoUrl}
               alt="Yaz Law"
               width={130}
               height={50}
-              priority
+              sizes="135px"
               className="h-auto w-[120px] object-contain sm:w-[135px]"
             />
           </Link>
@@ -160,6 +169,7 @@ export default function HeaderClient({ locale, labels, settings }: HeaderClientP
           <div className="flex items-center gap-3">
             <Link
               href={languageHref}
+              prefetch={false}
               className="flex size-10 items-center cursor-pointer justify-center rounded-lg border border-secondary text-secondary transition  hover:text-secondary"
               aria-label={labels.changeLanguage}
             >
@@ -172,6 +182,7 @@ export default function HeaderClient({ locale, labels, settings }: HeaderClientP
               className="flex size-10 items-center cursor-pointer justify-center rounded-lg border border-secondary text-secondary transition hover:border-secondary hover:text-secondary"
               aria-label="Toggle navigation"
               aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-navigation"
             >
               {mobileMenuOpen ? <CloseIcon /> : <Menu01 />}
             </button>
@@ -181,8 +192,9 @@ export default function HeaderClient({ locale, labels, settings }: HeaderClientP
 
       {/* Mobile Menu */}
       <div
+        id="mobile-navigation"
         className={`overflow-hidden border-t border-white/5 bg-dark transition-all duration-300 lg:hidden ${
-          mobileMenuOpen ? 'max-h-auto opacity-100' : 'max-h-0 border-transparent opacity-0'
+          mobileMenuOpen ? 'max-h-[900px] opacity-100' : 'max-h-0 border-transparent opacity-0'
         }`}
       >
         <Container>
@@ -195,6 +207,7 @@ export default function HeaderClient({ locale, labels, settings }: HeaderClientP
                   <li key={link.href} className="border-b border-white/5 last:border-none">
                     <Link
                       href={link.href}
+                      prefetch={false}
                       onClick={() => setMobileMenuOpen(false)}
                       className={`flex py-4 text-15 font-medium transition ${
                         active ? 'text-secondary' : 'text-grey hover:text-secondary'
@@ -286,12 +299,7 @@ export default function HeaderClient({ locale, labels, settings }: HeaderClientP
               </div>
             </div>
 
-            <Link
-              href={`/${locale}/contact`}
-              className="mt-5 flex h-[48px] w-full items-center justify-center rounded-[10px] bg-primary px-5 text-14 font-semibold text-white transition hover:bg-secondary"
-            >
-              {labels.consultation}
-            </Link>
+            <ConsultationModal locale={locale} label={labels.consultation} />
           </nav>
         </Container>
       </div>

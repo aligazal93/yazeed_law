@@ -74,6 +74,7 @@ export interface Config {
     partners: Partner;
     'accreditations-trust': AccreditationsTrust;
     articles: Article;
+    'consultation-requests': ConsultationRequest;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -88,6 +89,7 @@ export interface Config {
     partners: PartnersSelect<false> | PartnersSelect<true>;
     'accreditations-trust': AccreditationsTrustSelect<false> | AccreditationsTrustSelect<true>;
     articles: ArticlesSelect<false> | ArticlesSelect<true>;
+    'consultation-requests': ConsultationRequestsSelect<false> | ConsultationRequestsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -105,6 +107,10 @@ export interface Config {
     'how-working': HowWorking;
     'why-us': WhyUs;
     testimonials: Testimonial;
+    'about-page': AboutPage;
+    faq: Faq;
+    'articles-page': ArticlesPage;
+    'team-page': TeamPage;
   };
   globalsSelect: {
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
@@ -114,6 +120,10 @@ export interface Config {
     'how-working': HowWorkingSelect<false> | HowWorkingSelect<true>;
     'why-us': WhyUsSelect<false> | WhyUsSelect<true>;
     testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
+    'about-page': AboutPageSelect<false> | AboutPageSelect<true>;
+    faq: FaqSelect<false> | FaqSelect<true>;
+    'articles-page': ArticlesPageSelect<false> | ArticlesPageSelect<true>;
+    'team-page': TeamPageSelect<false> | TeamPageSelect<true>;
   };
   locale: 'ar' | 'en';
   widgets: {
@@ -149,6 +159,10 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: number;
+  /**
+   * محرر المحتوى يدير محتوى الموقع دون الحذف، ومسؤول الطلبات يتابع طلبات الاستشارة، ومدير النظام يمتلك كل الصلاحيات.
+   */
+  role: 'admin' | 'content-editor' | 'requests-manager';
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -222,6 +236,24 @@ export interface Service {
    */
   slug: string;
   description: string;
+  /**
+   * المحتوى التفصيلي الذي يظهر داخل صفحة الخدمة.
+   */
+  details?: {
+    image?: (number | null) | Media;
+    imageAlt?: string | null;
+    intro?: string | null;
+    servicesTitle?: string | null;
+    serviceItems?:
+      | {
+          title: string;
+          id?: string | null;
+        }[]
+      | null;
+    whyTitle?: string | null;
+    whyDescription?: string | null;
+    highlightText?: string | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -276,6 +308,38 @@ export interface Article {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "consultation-requests".
+ */
+export interface ConsultationRequest {
+  id: number;
+  fullName: string;
+  phone: string;
+  email: string;
+  city?: string | null;
+  specialization: 'commercial' | 'corporate' | 'real-estate' | 'labor' | 'family' | 'arbitration' | 'other';
+  consultationType: 'phone' | 'online' | 'office';
+  preferredDate: string;
+  preferredTime: '09:00' | '10:00' | '11:00' | '12:00' | '13:00' | '14:00' | '15:00' | '16:00' | '17:00' | '18:00';
+  summary: string;
+  locale: 'ar' | 'en';
+  status: 'new' | 'contacted' | 'confirmed' | 'completed' | 'cancelled';
+  adminNotes?: string | null;
+  prefix?: string | null;
+  _objectKey?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -325,6 +389,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'articles';
         value: number | Article;
+      } | null)
+    | ({
+        relationTo: 'consultation-requests';
+        value: number | ConsultationRequest;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -373,6 +441,7 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  role?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -438,6 +507,23 @@ export interface ServicesSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
   description?: T;
+  details?:
+    | T
+    | {
+        image?: T;
+        imageAlt?: T;
+        intro?: T;
+        servicesTitle?: T;
+        serviceItems?:
+          | T
+          | {
+              title?: T;
+              id?: T;
+            };
+        whyTitle?: T;
+        whyDescription?: T;
+        highlightText?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -472,6 +558,37 @@ export interface ArticlesSelect<T extends boolean = true> {
   date?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "consultation-requests_select".
+ */
+export interface ConsultationRequestsSelect<T extends boolean = true> {
+  fullName?: T;
+  phone?: T;
+  email?: T;
+  city?: T;
+  specialization?: T;
+  consultationType?: T;
+  preferredDate?: T;
+  preferredTime?: T;
+  summary?: T;
+  locale?: T;
+  status?: T;
+  adminNotes?: T;
+  prefix?: T;
+  _objectKey?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -660,6 +777,131 @@ export interface Testimonial {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-page".
+ */
+export interface AboutPage {
+  id: number;
+  title?: string | null;
+  description?: string | null;
+  ourStory: {
+    title: string;
+    content: string;
+    /**
+     * ارفع الصورة التي ستظهر بجانب محتوى قسم قصتنا
+     */
+    image?: (number | null) | Media;
+    items?:
+      | {
+          title: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  ourValues: {
+    title: string;
+    content?: string | null;
+    cards?:
+      | {
+          name: string;
+          desc: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  milestones: {
+    title: string;
+    cards?:
+      | {
+          date: string;
+          name: string;
+          description: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  ourWords: {
+    presidentWord: string;
+    presidentName: string;
+    presidentPosition: string;
+    cards?:
+      | {
+          icon: 'lock' | 'timer' | 'shield' | 'scale';
+          title: string;
+          description: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * إدارة عنوان وأسئلة وأجوبة قسم الأسئلة الشائعة بالعربية والإنجليزية.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faq".
+ */
+export interface Faq {
+  id: number;
+  badge: string;
+  title: string;
+  items: {
+    question: string;
+    answer: string;
+    id?: string | null;
+  }[];
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * إعدادات صفحة المقالات وصفحة تفاصيل المقال بالعربية والإنجليزية.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articles-page".
+ */
+export interface ArticlesPage {
+  id: number;
+  badge: string;
+  title: string;
+  description: string;
+  readMoreLabel: string;
+  recentArticlesTitle: string;
+  consultationTitle: string;
+  consultationDescription: string;
+  consultationButtonLabel: string;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * إدارة محتوى صفحة فريق العمل وترتيب ظهور أعضاء الفريق.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "team-page".
+ */
+export interface TeamPage {
+  id: number;
+  title: string;
+  description: string;
+  /**
+   * اسحب العناصر لتغيير ترتيب ظهور أعضاء الفريق في الصفحة.
+   */
+  members?:
+    | {
+        /**
+         * يفضل استخدام صورة شخصية رأسية وبجودة عالية.
+         */
+        image?: (number | null) | Media;
+        name: string;
+        jobTitle: string;
+        isActive?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-settings_select".
  */
 export interface SiteSettingsSelect<T extends boolean = true> {
@@ -812,6 +1054,126 @@ export interface TestimonialsSelect<T extends boolean = true> {
         content?: T;
         name?: T;
         position?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-page_select".
+ */
+export interface AboutPageSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  ourStory?:
+    | T
+    | {
+        title?: T;
+        content?: T;
+        image?: T;
+        items?:
+          | T
+          | {
+              title?: T;
+              id?: T;
+            };
+      };
+  ourValues?:
+    | T
+    | {
+        title?: T;
+        content?: T;
+        cards?:
+          | T
+          | {
+              name?: T;
+              desc?: T;
+              id?: T;
+            };
+      };
+  milestones?:
+    | T
+    | {
+        title?: T;
+        cards?:
+          | T
+          | {
+              date?: T;
+              name?: T;
+              description?: T;
+              id?: T;
+            };
+      };
+  ourWords?:
+    | T
+    | {
+        presidentWord?: T;
+        presidentName?: T;
+        presidentPosition?: T;
+        cards?:
+          | T
+          | {
+              icon?: T;
+              title?: T;
+              description?: T;
+              id?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faq_select".
+ */
+export interface FaqSelect<T extends boolean = true> {
+  badge?: T;
+  title?: T;
+  items?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articles-page_select".
+ */
+export interface ArticlesPageSelect<T extends boolean = true> {
+  badge?: T;
+  title?: T;
+  description?: T;
+  readMoreLabel?: T;
+  recentArticlesTitle?: T;
+  consultationTitle?: T;
+  consultationDescription?: T;
+  consultationButtonLabel?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "team-page_select".
+ */
+export interface TeamPageSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  members?:
+    | T
+    | {
+        image?: T;
+        name?: T;
+        jobTitle?: T;
+        isActive?: T;
         id?: T;
       };
   updatedAt?: T;

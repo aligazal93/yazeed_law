@@ -1,4 +1,5 @@
 import { ADMIN_GROUPS } from '@/constants/adminGroups'
+import { admins } from '@/access/permissions'
 import type { GlobalConfig } from 'payload'
 
 export const SiteSettings: GlobalConfig = {
@@ -13,7 +14,7 @@ export const SiteSettings: GlobalConfig = {
   access: {
     read: () => true,
 
-    update: ({ req }) => Boolean(req.user),
+    update: admins,
   },
 
   fields: [

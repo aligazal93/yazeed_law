@@ -1,4 +1,5 @@
 import { ADMIN_GROUPS } from '@/constants/adminGroups'
+import { admins, adminsOrContentEditors } from '@/access/permissions'
 import type { CollectionConfig } from 'payload'
 
 export const Services: CollectionConfig = {
@@ -17,9 +18,9 @@ export const Services: CollectionConfig = {
 
   access: {
     read: () => true,
-    create: ({ req }) => Boolean(req.user),
-    update: ({ req }) => Boolean(req.user),
-    delete: ({ req }) => Boolean(req.user),
+    create: adminsOrContentEditors,
+    update: adminsOrContentEditors,
+    delete: admins,
   },
 
   fields: [
@@ -57,6 +58,76 @@ export const Services: CollectionConfig = {
       label: 'وصف الخدمة',
       localized: true,
       required: true,
+    },
+    {
+      name: 'details',
+      type: 'group',
+      label: 'تفاصيل صفحة الخدمة',
+      admin: {
+        description: 'المحتوى التفصيلي الذي يظهر داخل صفحة الخدمة.',
+      },
+      fields: [
+        {
+          name: 'image',
+          type: 'upload',
+          relationTo: 'media',
+          label: 'الصورة الرئيسية',
+        },
+        {
+          name: 'imageAlt',
+          type: 'text',
+          label: 'النص البديل للصورة',
+          localized: true,
+        },
+        {
+          name: 'intro',
+          type: 'textarea',
+          label: 'مقدمة تفاصيل الخدمة',
+          localized: true,
+        },
+        {
+          name: 'servicesTitle',
+          type: 'text',
+          label: 'عنوان قائمة الخدمات',
+          localized: true,
+        },
+        {
+          name: 'serviceItems',
+          type: 'array',
+          label: 'الخدمات المقدمة في هذا المجال',
+          labels: {
+            singular: 'خدمة فرعية',
+            plural: 'الخدمات الفرعية',
+          },
+          fields: [
+            {
+              name: 'title',
+              type: 'text',
+              label: 'النص',
+              localized: true,
+              required: true,
+            },
+          ],
+        },
+        {
+          name: 'whyTitle',
+          type: 'text',
+          label: 'عنوان لماذا تختارنا',
+          localized: true,
+        },
+        {
+          name: 'whyDescription',
+          type: 'textarea',
+          label: 'وصف لماذا تختارنا',
+          localized: true,
+        },
+        {
+          name: 'highlightText',
+          type: 'textarea',
+          label: 'النص المميز',
+          localized: true,
+        },
+      ],
     },
   ],
 }

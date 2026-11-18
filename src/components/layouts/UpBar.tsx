@@ -4,7 +4,7 @@ import {
   MailIcon,
   MapPinCheckIcon,
   PhoneIcon,
-} from '@animateicons/react/lucide'
+} from '@/components/ui/Icons'
 
 import Container from './Container'
 import { getDictionary, Locale } from '@/lib/getDictionary'

@@ -99,7 +99,10 @@ export default function HowWorking({ locale, data }: HowWorkingProps) {
         {/* Mobile + Tablet Timeline */}
         <ol className="relative mx-auto flex max-w-[650px] flex-col lg:hidden">
           {/* Vertical line */}
-          <div className="absolute bottom-8 top-8 start-[27px] w-px bg-[linear-gradient(180deg,rgba(201,169,110,0.45),rgba(201,169,110,0.08))]" />
+          <li
+            aria-hidden="true"
+            className="absolute bottom-8 top-8 start-[27px] w-px list-none bg-[linear-gradient(180deg,rgba(201,169,110,0.45),rgba(201,169,110,0.08))]"
+          />
 
           {steps.map((step, index) => {
             const isActive = step.id === 3

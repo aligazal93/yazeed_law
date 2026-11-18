@@ -5,7 +5,7 @@ import type { Locale } from '@/lib/getDictionary'
 import { getAssetUrl } from '@/lib/api'
 import type { AboutUs as AboutUsData } from '@/payload-types'
 import Container from './layouts/Container'
-import { CheckIcon, ClockIcon, DownloadIcon } from '@animateicons/react/lucide'
+import { CheckIcon, ClockIcon, DownloadIcon } from '@/components/ui/Icons'
 
 type _AboutFeature = {
   id: number
@@ -40,11 +40,6 @@ export default function AboutUs({ locale, data }: AboutUsProps) {
         />
       </div>
 
-      {/* ==========================================
-          Background dark overlay
-          مهم يكون أخف من النسخة القديمة
-          عشان lines.png تفضل ظاهرة
-      ========================================== */}
       <div className="pointer-events-none absolute inset-0 z-[1] bg-[linear-gradient(90deg,rgba(2,11,24,0.80)_0%,rgba(2,11,24,0.60)_50%,rgba(2,11,24,0.80)_100%)]" />
 
       <div className="pointer-events-none absolute inset-0 z-[2] bg-[radial-gradient(circle_at_center,rgba(16,32,53,0.20)_0%,rgba(2,11,24,0.30)_55%,rgba(2,11,24,0.70)_100%)]" />
